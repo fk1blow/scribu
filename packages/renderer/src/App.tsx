@@ -2,6 +2,7 @@ import * as React from "react";
 import useCodemirror, { getTheme } from "./useCodemirror";
 import { languages } from "./languages";
 import { EditorState } from "@codemirror/state";
+import { Splash } from './features/splash'
 
 function Editor() {
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
@@ -118,7 +119,8 @@ function Editor() {
 export default function App() {
   return (
     <div className="App">
-      <Editor />
+      <Splash />
+      {/* <Editor /> */}
     </div>
   );
 }
