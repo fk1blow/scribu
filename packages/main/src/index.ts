@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain } from 'electron'
 import { IpcMainEvent } from 'electron/main'
 import { join } from 'path'
 import { URL } from 'url'
+import fs from 'fs-extra'
 
-import { fetchWorkspace } from './workspace'
+import { fetchWorkspace, writeToCurrentFile } from './workspace-handlers'
 
 const isSingleInstance = app.requestSingleInstanceLock()
 
@@ -13,6 +14,7 @@ if (!isSingleInstance) {
 }
 
 app.disableHardwareAcceleration()
+app.setName('Scribu')
 
 /**
  * Workaround for TypeScript bug
@@ -106,10 +108,93 @@ if (env.PROD) {
     .catch((e) => console.error('Failed check updates:', e))
 }
 
-// workspace listeners
+// various stuff tbd
+
 app.whenReady().then(() => {
-  ipcMain.handle('get-workspace', (_evt) => fetchWorkspace(app))
+  // fetchWorkspace(app).then((workspace) =>
+  //   mainWindow?.webContents.send('prepare-workspace', workspace),
+  // )
+
+  ipcMain.handle('app-ready', async (evt) => {
+    const workspace = await fetchWorkspace(app)
+    evt.sender.send('workspace-ready', workspace)
+  })
+
+  ipcMain.handle(
+    'write-to-current-file',
+    async (evt, data: { content: string; filepath: string }) => {
+      writeToCurrentFile(app, data)
+    },
+  )
+
+  // ipcMain.handle('get-workspace', (_evt) => fetchWorkspace(app))
   // ipcMain.handle('write-current-file', (_evt, content: string) =>
   //   writeCurrentFile(app, content),
   // )
+
+  // globalShortcut.register('CommandOrControl+s', () => {
+  //   dialog.showSaveDialog({
+  //     filters: [{ extensions: ['md'], name: 'markdown' }],
+  //     properties: ['createDirectory'],
+  //   }).then()
+  // })
+
+  const { Menu, MenuItem } = require('electron')
+
+  const menu = new Menu()
+  menu.append(
+    new MenuItem({
+      label: 'Scribu',
+      submenu: [
+        {
+          label: 'About',
+          // role: 'fileMenu',
+          // accelerator: 'CommandOrControl+s',
+          click: () => {
+            console.log('Electron rocks!')
+          },
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Quit Scribu',
+          role: 'quit',
+          accelerator: 'CommandOrControl+q',
+        },
+      ],
+    }),
+  )
+  menu.append(
+    new MenuItem({
+      label: 'File',
+      submenu: [
+        {
+          label: 'Save File',
+          accelerator: 'CommandOrControl+s',
+          click: () => {
+            dialog
+              .showSaveDialog({
+                filters: [{ extensions: ['md'], name: 'markdown' }],
+                properties: ['createDirectory'],
+              })
+              .then(({ canceled, filePath }) => {
+                if (!canceled && filePath) {
+                  fs.writeJSON(filePath, 'my first thing here?')
+                }
+              })
+          },
+        },
+      ],
+    }),
+  )
+
+  // Menu.setApplicationMenu(menu)
 })
+
+// should have access to the current file displayed
+// store it inside the tmp folder(`dd-mm-yyyy.md`) and have a link to it
+// inside the Workspace
+
+// when the app is ready, read the workspace, get the current file
+// and if there is one, send it to the renderer

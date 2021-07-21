@@ -7,12 +7,10 @@ declare namespace Workspace {
   export interface FileMeta {
     createdAt: number
     updatedAt: number
-    createdBy: string
   }
 
   export interface File {
-    name: string
-    content: string
-    meta?: FileMeta
+    path: string
+    meta: FileMeta
   }
 }

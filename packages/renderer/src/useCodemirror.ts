@@ -1,17 +1,17 @@
-import * as React from "react"
-import { BlockInfo, EditorView, ViewPlugin, ViewUpdate } from "@codemirror/view"
-import { Extension, Compartment, EditorSelection } from "@codemirror/state"
-import { LanguageSupport, syntaxTree } from "@codemirror/language"
-import docSizePlugin from "./docSizePlugin"
-import { tags, styleTags, Tag } from "@codemirror/highlight"
-import { HighlightStyle, tags as t } from "@codemirror/highlight"
-import {MarkdownConfig} from "lezer-markdown"
-import { lightTheme } from "./light-theme"
-import { testKeymap } from "./test-keybindings"
-import { GutterMarker } from "@codemirror/gutter"
-import headingsGutter from "./headings-gutter"
+import * as React from 'react'
+import { BlockInfo, EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view'
+import { Extension, Compartment, EditorSelection } from '@codemirror/state'
+import { LanguageSupport, syntaxTree } from '@codemirror/language'
+import docSizePlugin from './docSizePlugin'
+import { tags, styleTags, Tag } from '@codemirror/highlight'
+import { HighlightStyle, tags as t } from '@codemirror/highlight'
+import { MarkdownConfig } from 'lezer-markdown'
+import { lightTheme } from './light-theme'
+import { testKeymap } from './test-keybindings'
+import { GutterMarker } from '@codemirror/gutter'
+import headingsGutter from './headings-gutter'
 
-type Bundle = typeof import("./codemirror")
+type Bundle = typeof import('./codemirror')
 
 interface Theme {
   base: Extension
@@ -30,7 +30,7 @@ interface Editor {
 
 export default function useCodemirror(): [
   null | Editor,
-  (div: null | HTMLDivElement) => void
+  (div: null | HTMLDivElement) => void,
 ] {
   const [targetEl, setTargetEl] = React.useState<HTMLDivElement | null>(null)
   const [editor, setEditor] = React.useState<Editor | null>(null)
@@ -48,7 +48,7 @@ export default function useCodemirror(): [
     let view: null | EditorView
 
     async function createEditor() {
-      const codemirror = await import("./codemirror")
+      const codemirror = await import('./codemirror')
 
       if (!targetEl || didCancel) {
         return
@@ -95,8 +95,8 @@ export default function useCodemirror(): [
   return [editor, setTargetEl]
 }
 
-export function getTheme(codemirror: Bundle, kind: "light" | "dark"): Theme {
-  if (kind === "dark") {
+export function getTheme(codemirror: Bundle, kind: 'light' | 'dark'): Theme {
+  if (kind === 'dark') {
     return {
       base: codemirror.themeOneDark.oneDarkTheme,
       highlight: codemirror.themeOneDark.oneDarkHighlightStyle,
@@ -122,51 +122,49 @@ async function loadExentions({
   const languageDescription = filename
     ? codemirror.language.LanguageDescription.matchFilename(
         codemirror.languageData.languages,
-        filename
+        filename,
       )
     : null
   // console.log("languageDescription: ", languageDescription)
 
   let languageSupport: null | LanguageSupport = null
 
-  if (languageDescription?.name === "Markdown") {
-    const md = await import("@codemirror/lang-markdown")
+  const md = await import('@codemirror/lang-markdown')
 
-    const HighlightDelim = { resolve: "InlineFence", mark: "InlineFence" }
-    const tags = {
-      // fence: Tag.define(t.null), // define custom tag, that can be picked up by the style configuration
-      fence: Tag.define(), // define custom tag, that can be picked up by the style configuration
-    };
+  const HighlightDelim = { resolve: 'InlineFence', mark: 'InlineFence' }
+  const tags = {
+    // fence: Tag.define(t.null), // define custom tag, that can be picked up by the style configuration
+    fence: Tag.define(), // define custom tag, that can be picked up by the style configuration
+  }
 
-    const MarkInlineFence: MarkdownConfig = {
-      defineNodes: ["InlineFence", "InlineFenceMark"],
-      parseInline: [{
-        name: "InlineFence",
+  const MarkInlineFence: MarkdownConfig = {
+    defineNodes: ['InlineFence', 'InlineFenceMark'],
+    parseInline: [
+      {
+        name: 'InlineFence',
         parse(cx, next, pos) {
-          if (next == 96 /* '`' */) return cx.addDelimiter(HighlightDelim, pos, pos + 1, true, true)
+          if (next == 96 /* '`' */)
+            return cx.addDelimiter(HighlightDelim, pos, pos + 1, true, true)
           return -1
         },
         // before: "InlineCode"
-        before: "InlineCode"
-      }],
-      props: [
-        styleTags({
-          InlineFence: tags.fence
-        })
-      ]
-    }
-
-    languageSupport = md.markdown({
-      codeLanguages: codemirror.languageData.languages.filter(
-        (d) => d.name !== "Markdown"
-      ),
-      extensions: [MarkInlineFence],
-      // extensions: [],
-    })
-  } else if (languageDescription) {
-    languageSupport = await languageDescription.load()
+        before: 'InlineCode',
+      },
+    ],
+    props: [
+      styleTags({
+        InlineFence: tags.fence,
+      }),
+    ],
   }
 
+  languageSupport = md.markdown({
+    codeLanguages: codemirror.languageData.languages.filter(
+      (d) => d.name !== 'Markdown',
+    ),
+    extensions: [MarkInlineFence],
+    // extensions: [],
+  })
 
   const extensions = [
     docSizePlugin,

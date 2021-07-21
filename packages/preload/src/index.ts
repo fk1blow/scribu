@@ -1,16 +1,17 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 const apiKey = 'electron'
+
 /**
  * @see https://github.com/electron/electron/issues/21437#issuecomment-573522360
  */
 const api: ElectronApi = {
   versions: process.versions,
+  signalAppReady: () => ipcRenderer.invoke('app-ready'),
   getWorkspace: () => ipcRenderer.invoke('get-workspace'),
-  // writeToCurrentFile: (content: string) => {
-  //   console.log('contenxxxxt: ', content)
-  //   return ipcRenderer.invoke('write-current-file', content)
-  // },
+  listenToMain: (event, listener) => ipcRenderer.on(event, listener),
+  writeToCurrentFile: (payload: { content: string; filepath: string }) =>
+    ipcRenderer.invoke('write-to-current-file', payload),
 }
 
 if (import.meta.env.MODE !== 'test') {

@@ -6,6 +6,7 @@ const buildVersion = `${now.getFullYear() - 2000}.${now.getMonth() + 1}.${now.ge
  * @see https://www.electron.build/configuration/configuration
  */
 const config = {
+  productName: 'Scribu',
   directories: {
     output: 'dist',
     buildResources: 'buildResources',
