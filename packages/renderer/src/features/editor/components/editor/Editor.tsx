@@ -1,13 +1,23 @@
-import React from 'react'
-import useCodemirror, { getTheme } from '../../../../useCodemirror'
+import React, { forwardRef } from 'react'
 import { EditorState } from '@codemirror/state'
+import styled from '@emotion/styled'
 
-interface EditorProps {
+import useCodemirror, { getTheme } from '../../../../useCodemirror'
+import TabsBar from '../tabs-bar/TabsBar'
+import StatusBar from '/@/features/editor/components/status-bar/StatusBar'
+
+const EditorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+`
+
+interface Props {
   document: string
   onUpdate: (doc: string) => void
 }
 
-const Editor = ({ document, onUpdate }: EditorProps) => {
+const Editor = ({ document, onUpdate }: Props, ref) => {
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
   const themeRef = React.useRef(theme)
 
@@ -77,29 +87,18 @@ const Editor = ({ document, onUpdate }: EditorProps) => {
   }, [editor, document])
 
   return (
-    <div
-      className="codemirror-container"
-      ref={editorRef}
-      style={{ minHeight: '100vh', background: '#FFFBF2' }}
-    />
+    <EditorWrapper>
+      <TabsBar />
+
+      <div style={{ display: 'flex', flex: 1, minHeight: '0px' }}>
+        <div style={{ flex: 1, overflow: 'auto' }}>
+          <div className="codemirror-container" ref={editorRef} />
+        </div>
+      </div>
+
+      <StatusBar />
+    </EditorWrapper>
   )
 }
 
-// const Splash = () => {
-//   // const { signalAppReady, listenToMain } = useElectron()
-
-//   // useEffect(() => {
-//   //   listenToMain(
-//   //     'workspace-ready',
-//   //     (_evt, data: { document: string; workspace: Workspace.Application }) => {
-//   //       console.log('data.fileCurrent: ', data)
-//   //     },
-//   //   )
-
-//   //   signalAppReady()
-//   // }, [])
-
-//   return <Editor />
-// }
-
-export default Editor
+export default forwardRef(Editor)

@@ -119,22 +119,15 @@ async function loadExentions({
   themeCompartment: Compartment
   highlightCompartment: Compartment
 }): Promise<Extension> {
-  const languageDescription = filename
-    ? codemirror.language.LanguageDescription.matchFilename(
-        codemirror.languageData.languages,
-        filename,
-      )
-    : null
-  // console.log("languageDescription: ", languageDescription)
 
   let languageSupport: null | LanguageSupport = null
 
   const md = await import('@codemirror/lang-markdown')
 
-  const HighlightDelim = { resolve: 'InlineFence', mark: 'InlineFence' }
+  const HighlightDelim = { resolve: 'InlineCode', mark: 'InlineFence' }
   const tags = {
-    // fence: Tag.define(t.null), // define custom tag, that can be picked up by the style configuration
-    fence: Tag.define(), // define custom tag, that can be picked up by the style configuration
+    fence: Tag.define(t.null), // define custom tag, that can be picked up by the style configuration
+    // fence: Tag.define(), // define custom tag, that can be picked up by the style configuration
   }
 
   const MarkInlineFence: MarkdownConfig = {
@@ -147,7 +140,6 @@ async function loadExentions({
             return cx.addDelimiter(HighlightDelim, pos, pos + 1, true, true)
           return -1
         },
-        // before: "InlineCode"
         before: 'InlineCode',
       },
     ],

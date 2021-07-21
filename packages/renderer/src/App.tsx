@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { debounce } from 'lodash'
 import { useElectron } from '/@/lib/use-electron/use-electron'
 import { Editor } from './features/editor'
-import useDebounce from 'react-use/lib/useDebounce'
+import styled from '@emotion/styled'
 
 import './index.scss'
+import { useRef } from 'react'
+
+const StyledApp = styled.div`
+  background: #fffbf2;
+`
 
 export default function App() {
   const { signalAppReady, listenToMain, writeToCurrentFile } = useElectron()
 
-  const [initialDoc, setInitialDoc] = useState('')
-  const [currentDoc, setCurrentDoc] = useState('')
+  const [document, setDocument] = useState('')
   const [fileCurrent, setFilecurrrent] = useState({ path: '', meta: {} })
 
   useEffect(() => {
     listenToMain(
       'workspace-ready',
       (_evt, data: { document: string; workspace: Workspace.Application }) => {
-        setInitialDoc(data.document)
-        setCurrentDoc(data.document)
+        setDocument(data.document)
         setFilecurrrent(data.workspace.fileCurrent)
       },
     )
@@ -25,17 +29,20 @@ export default function App() {
     signalAppReady()
   }, [])
 
-  useDebounce(
-    () => {
-      writeToCurrentFile({ content: currentDoc, filepath: fileCurrent.path })
-    },
-    500,
-    [currentDoc],
+  const debouncedSave = useCallback(
+    debounce((content) => {
+      if (!fileCurrent.path.length) return
+      console.log('content: ', content)
+      writeToCurrentFile({ content, filepath: fileCurrent.path })
+    }, 500),
+    [fileCurrent.path],
   )
 
+  const ref = useRef()
+
   return (
-    <div className="App">
-      <Editor document={initialDoc} onUpdate={(doc) => setCurrentDoc(doc)} />
-    </div>
+    <StyledApp>
+      <Editor ref={ref} document={document} onUpdate={debouncedSave} />
+    </StyledApp>
   )
 }

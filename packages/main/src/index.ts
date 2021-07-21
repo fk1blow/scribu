@@ -4,7 +4,11 @@ import { join } from 'path'
 import { URL } from 'url'
 import fs from 'fs-extra'
 
-import { fetchWorkspace, writeToCurrentFile } from './workspace-handlers'
+import {
+  fetchWorkspace,
+  writeToCurrentFile,
+  createNewFile,
+} from './workspace-handlers'
 
 const isSingleInstance = app.requestSingleInstanceLock()
 
@@ -180,16 +184,54 @@ app.whenReady().then(() => {
               })
               .then(({ canceled, filePath }) => {
                 if (!canceled && filePath) {
-                  fs.writeJSON(filePath, 'my first thing here?')
+                  // TODO should go through workspace handlers
+                  // updating the workspace(and history)
+                  // fs.writeFile(filePath, '', {
+                  //   encoding: 'Utf8',
+                  // })
                 }
               })
           },
+        },
+
+        {
+          label: 'New File',
+          accelerator: 'CommandOrControl+n',
+          click: () => {
+            createNewFile(app)
+            // mainWindow?.webContents.send('new-file')
+          },
+        },
+
+        {
+          label: 'Copy',
+          role: 'copy',
+          accelerator: 'CommandOrControl+c',
+        },
+
+        {
+          label: 'Pase',
+          role: 'paste',
+          accelerator: 'CommandOrControl+v',
         },
       ],
     }),
   )
 
-  // Menu.setApplicationMenu(menu)
+  menu.append(
+    new MenuItem({
+      label: 'Window',
+      submenu: [
+        {
+          label: 'Reload',
+          role: 'reload',
+          accelerator: 'CommandOrControl+r',
+        },
+      ],
+    }),
+  )
+
+  Menu.setApplicationMenu(menu)
 })
 
 // should have access to the current file displayed

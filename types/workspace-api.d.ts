@@ -11,6 +11,7 @@ declare namespace Workspace {
 
   export interface File {
     path: string
+    name: string
     meta: FileMeta
   }
 }

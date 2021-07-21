@@ -3,7 +3,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  // -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #ddd;
 }
@@ -34,28 +34,58 @@ body {
   src: url('./assets/fonts/iAWriterDuospace-BoldItalic.otf') format('opentype');
 }
 
+@font-face {
+  font-family: 'iAWriterMonoS-Regular';
+  src: url('./assets/fonts/iAWriterMonoS-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'iAWriterMonoS-Bold';
+  src: url('./assets/fonts/iAWriterMonoS-Bold.otf') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'iAWriterMonoS-Italic';
+  src: url('./assets/fonts/iAWriterMonoS-Italic.otf') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'iAWriterMonoS-BoldItalic';
+  src: url('./assets/fonts/iAWriterMonoS-BoldItalic.otf') format('woff2');
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-// .App {
-//   min-height: 100vh;
-//   position: relative;
-//   padding: 20px;
-// }
+.App {
+  background: #fffbf2;
+}
 
 header {
   margin-bottom: 8px;
 }
 
 .codemirror-container {
-  width: 100%;
+  // padding-top: 24px;
+  // padding-bottom: 24px;
+  // width: 800px;
+  // max-height: auto;
+  // height: calc(100vh -48px);
+  // height: auto;
+  // margin: 0 auto;
+  // overflow: auto;
   // min-height: 600px;
-  display: flex;
-  align-items: stretch;
-  justify-content: stretch;
+  // display: flex;
+  // align-items: stretch;
+  // justify-content: stretch;
 
   // .cmt-heading.cmt-meta {
   //   display: none;
@@ -66,10 +96,25 @@ header {
   // }
 
   .cm-wrap {
-    width: 100%;
+    // width: 100%;
+    width: 800px;
+    // overflow: none;
+    overflow: auto;
+    outline: none;
+    // max-height: 100vh;
+    margin: 0 auto;
   }
   .cm-scroller {
     overflow: auto;
+    // max-height: 100vh;
+  }
+
+  .cm-content {
+    white-space: normal;
+  }
+
+  .cmt-fence {
+    color: blue;
   }
 }
 
