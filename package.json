@@ -28,10 +28,6 @@
   "browserslist": [
     "Chrome 91"
   ],
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged",
-    "pre-push": "npm run typecheck"
-  },
   "lint-staged": {
     "*.{js,ts}": "eslint --cache --fix"
   },
