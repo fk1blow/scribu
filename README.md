@@ -2,4 +2,4 @@
 
 # Scribu
 
-markdown editor seeking answers
+markdown editor dupa o zi un Vaslui
