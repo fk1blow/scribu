@@ -96,39 +96,6 @@ const Editor = ({ onUpdate, document, workspace }: Props, ref) => {
       didCancel = true
     }
   }, [editor])
-  // not sure if the editor should change based on `document` dep
-  // }, [editor, document])
-
-  useImperativeHandle(ref, () => {
-    return {
-      replaceDocumentAndWorkspace: (data: {
-        document: string
-        workspace: Workspace.Application
-      }) => {
-        // setDocument(data.document)
-        // setWorkspace(data.workspace)
-
-        // console.log('data.document: ', data.document)
-        console.log('editor: ', editor)
-
-        if (editor) {
-          console.log('data.document: ', data.document)
-          // const state = editor.view.state
-          // editor.view.state.update({ changes: { from: 0, to: data.document.length, insert: data.document } })
-
-          editor.view.dispatch({
-            changes: [
-              {
-                from: 0,
-                to: editor.view.state.doc.length,
-                insert: data.document,
-              },
-            ],
-          })
-        }
-      },
-    }
-  })
 
   return (
     <EditorWrapper>
