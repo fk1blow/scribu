@@ -2,7 +2,7 @@ interface ElectronApi {
   readonly versions: Readonly<NodeJS.ProcessVersions>
   signalAppReady: () => Promise<boolean>
   getWorkspace: () => Promise<Workspace.Application>
-  writeToCurrentFile: (payload: { content: string, filepath: string }) => Promise<any>
+  writeToCurrentFile: (content: string) => Promise<any>
   listenToMain: (
     channel: string,
     listener: (event: IpcRendererEvent, ...args: any[]) => void,

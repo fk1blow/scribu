@@ -1,17 +1,23 @@
-import styled from '@emotion/styled';
-import React from 'react';
+import styled from '@emotion/styled'
+import React from 'react'
+import FilePath from './FilePath'
 
 const StyledStatusBar = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 32px 0 32px;
   height: 48px;
-  /* position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0; */
   background: #fffbf2c9;
 `
 
-const StatusBar: React.FC = () => {
-  return (<StyledStatusBar>status bar</StyledStatusBar>)
+interface Props {
+  workspace: Workspace.Application
+}
+
+const StatusBar: React.FC<Props> = ({ workspace }: Props) => {
+  return <StyledStatusBar>
+    <FilePath workspace={workspace} />
+  </StyledStatusBar>
 }
 
 export default StatusBar

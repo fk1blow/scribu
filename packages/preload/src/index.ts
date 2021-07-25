@@ -10,8 +10,8 @@ const api: ElectronApi = {
   signalAppReady: () => ipcRenderer.invoke('app-ready'),
   getWorkspace: () => ipcRenderer.invoke('get-workspace'),
   listenToMain: (event, listener) => ipcRenderer.on(event, listener),
-  writeToCurrentFile: (payload: { content: string; filepath: string }) =>
-    ipcRenderer.invoke('write-to-current-file', payload),
+  writeToCurrentFile: (content: string) =>
+    ipcRenderer.invoke('write-to-current-file', content),
 }
 
 if (import.meta.env.MODE !== 'test') {

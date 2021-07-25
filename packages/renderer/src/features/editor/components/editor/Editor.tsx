@@ -1,10 +1,11 @@
-import React, { forwardRef } from 'react'
-import { EditorState } from '@codemirror/state'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import { EditorState, Transaction } from '@codemirror/state'
 import styled from '@emotion/styled'
 
 import useCodemirror, { getTheme } from '../../../../useCodemirror'
 import TabsBar from '../tabs-bar/TabsBar'
 import StatusBar from '/@/features/editor/components/status-bar/StatusBar'
+import { ViewUpdate } from '@codemirror/view'
 
 const EditorWrapper = styled.div`
   display: flex;
@@ -13,17 +14,17 @@ const EditorWrapper = styled.div`
 `
 
 interface Props {
+  workspace: Workspace.Application | null
   document: string
   onUpdate: (doc: string) => void
 }
 
-const Editor = ({ document, onUpdate }: Props, ref) => {
+const Editor = ({ onUpdate, document, workspace }: Props, ref) => {
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
   const themeRef = React.useRef(theme)
 
-  React.useEffect(() => {
-    themeRef.current = theme
-  }, [theme])
+  // const [workspace, setWorkspace] = useState<Workspace.Application | null>(null)
+  // const [document, setDocument] = useState('')
 
   const [editor, editorRef] = useCodemirror()
 
@@ -67,36 +68,83 @@ const Editor = ({ document, onUpdate }: Props, ref) => {
       // Keep our state in sync with the editor's state. This listener is called
       // after view.setState and on any future updates
       const updateListener = codemirror.view.EditorView.updateListener.of(
-        (update) => {
+        (update: ViewUpdate) => {
+          console.log('update.docChanged: ', update.docChanged)
+          // console.log('update: ', update)
+          // console.log('update.state: ', update.state === update.startState)
+          // console.log('update.startState: ', update.startState)
+          // console.log('state === update.state: ', state === update.state)
           // fileStateMapRef.current[filename] = update.state
-          onUpdate(update.state.doc.toString())
+
+          // console.log('changed???')
+
+          if (update.docChanged) {
+            onUpdate(update.state.doc.toString())
+          }
         },
       )
 
-      const state = codemirror.state.EditorState.create({
+      const initialState = codemirror.state.EditorState.create({
         doc: document,
         extensions: [extensions, updateListener],
       })
 
-      editor.view.setState(state)
+      editor.view.setState(initialState)
     })
 
     return () => {
       didCancel = true
     }
-  }, [editor, document])
+  }, [editor])
+  // not sure if the editor should change based on `document` dep
+  // }, [editor, document])
+
+  useImperativeHandle(ref, () => {
+    return {
+      replaceDocumentAndWorkspace: (data: {
+        document: string
+        workspace: Workspace.Application
+      }) => {
+        // setDocument(data.document)
+        // setWorkspace(data.workspace)
+
+        // console.log('data.document: ', data.document)
+        console.log('editor: ', editor)
+
+        if (editor) {
+          console.log('data.document: ', data.document)
+          // const state = editor.view.state
+          // editor.view.state.update({ changes: { from: 0, to: data.document.length, insert: data.document } })
+
+          editor.view.dispatch({
+            changes: [
+              {
+                from: 0,
+                to: editor.view.state.doc.length,
+                insert: data.document,
+              },
+            ],
+          })
+        }
+      },
+    }
+  })
 
   return (
     <EditorWrapper>
-      <TabsBar />
+      {workspace && <TabsBar />}
 
       <div style={{ display: 'flex', flex: 1, minHeight: '0px' }}>
-        <div style={{ flex: 1, overflow: 'auto' }}>
-          <div className="codemirror-container" ref={editorRef} />
+        <div style={{ flex: 1, overflow: 'auto', justifyContent: 'stretch' }}>
+          <div
+            className="codemirror-container"
+            ref={editorRef}
+            style={{ height: '100%' }}
+          />
         </div>
       </div>
 
-      <StatusBar />
+      {workspace && <StatusBar workspace={workspace} />}
     </EditorWrapper>
   )
 }
