@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { EditorState, Transaction } from '@codemirror/state'
 import styled from '@emotion/styled'
 
-import useCodemirror, { getTheme } from '../../../../useCodemirror'
+import useCodemirror, { getTheme } from '../../hooks/useCodemirror'
 import TabsBar from '../tabs-bar/TabsBar'
 import StatusBar from '/@/features/editor/components/status-bar/StatusBar'
 import { ViewUpdate } from '@codemirror/view'
@@ -11,6 +11,18 @@ const EditorWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+
+  .cm-scroller {
+    width: calc(800px + 180px);
+    padding-left: 90px;
+    padding-right: 90px;
+    margin: 0 auto;
+    height: 100%;
+  }
+
+  .cm-editor {
+    height: 100%;
+  }
 `
 
 interface Props {
@@ -19,12 +31,9 @@ interface Props {
   onUpdate: (doc: string) => void
 }
 
-const Editor = ({ onUpdate, document, workspace }: Props, ref) => {
+const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
   const themeRef = React.useRef(theme)
-
-  // const [workspace, setWorkspace] = useState<Workspace.Application | null>(null)
-  // const [document, setDocument] = useState('')
 
   const [editor, editorRef] = useCodemirror()
 
@@ -69,15 +78,6 @@ const Editor = ({ onUpdate, document, workspace }: Props, ref) => {
       // after view.setState and on any future updates
       const updateListener = codemirror.view.EditorView.updateListener.of(
         (update: ViewUpdate) => {
-          console.log('update.docChanged: ', update.docChanged)
-          // console.log('update: ', update)
-          // console.log('update.state: ', update.state === update.startState)
-          // console.log('update.startState: ', update.startState)
-          // console.log('state === update.state: ', state === update.state)
-          // fileStateMapRef.current[filename] = update.state
-
-          // console.log('changed???')
-
           if (update.docChanged) {
             onUpdate(update.state.doc.toString())
           }
@@ -116,4 +116,4 @@ const Editor = ({ onUpdate, document, workspace }: Props, ref) => {
   )
 }
 
-export default forwardRef(Editor)
+export default Editor

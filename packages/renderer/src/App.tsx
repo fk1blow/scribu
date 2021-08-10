@@ -5,10 +5,14 @@ import { useElectron } from '/@/lib/use-electron/use-electron'
 import { Editor } from './features/editor'
 import styled from '@emotion/styled'
 
-import './index.scss'
+import './assets/styles/index.scss'
+import TitleBar from '/@/features/titlebar/components/TitleBar/TitleBar'
 
 const StyledApp = styled.div`
   background: #fffbf2;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 `
 
 export interface DocumentAndWorkspace {
@@ -19,7 +23,6 @@ export interface DocumentAndWorkspace {
 export default function App() {
   const { signalAppReady, listenToMain, writeToCurrentFile } = useElectron()
   const [editorKeyRef, setEditorKeyRef] = useState('pristine')
-  const editorRef = useRef()
   const [workspace, setWorkspace] = useState<Workspace.Application | null>(null)
   const [document, setDocument] = useState('')
 
@@ -35,20 +38,6 @@ export default function App() {
     [workspace],
   )
 
-  useEffect(() => {
-    if (!editorRef.current) return
-
-    listenToMain('workspace-ready', (_evt, data: DocumentAndWorkspace) => {
-      workspaceChanged(data)
-    })
-
-    listenToMain('filecurrent-changed', (_evt, data: DocumentAndWorkspace) => {
-      workspaceChanged(data)
-    })
-
-    signalAppReady()
-  }, [editorRef.current])
-
   const onUpdateDocument = useCallback(
     debounce((content) => {
       if (!workspace?.fileCurrent.path.length) return
@@ -57,11 +46,24 @@ export default function App() {
     [workspace],
   )
 
+  useEffect(() => {
+    listenToMain('workspace-ready', (_evt, data: DocumentAndWorkspace) => {
+      workspaceChanged(data)
+    })
+
+    listenToMain('file-new', (_evt, data: DocumentAndWorkspace) => {
+      workspaceChanged(data)
+    })
+
+    signalAppReady()
+  }, [])
+
   return (
     <StyledApp>
+      {/* <TitleBar workspace={workspace} /> */}
+
       <Editor
         key={editorKeyRef}
-        ref={editorRef}
         document={document}
         workspace={workspace}
         onUpdate={onUpdateDocument}

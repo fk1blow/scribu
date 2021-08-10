@@ -160,11 +160,11 @@ export async function createAndReplaceFileCurrent(app: Electron.App) {
   }
 
   await fs.writeJSON(workspaceFilePath, workspaceUpdate)
-  const document = await fs.readFile(filePathUnused).then((c) => {
-    const x = c.toString()
-    // console.log('x: ', x)
-    return x
-  })
+  const document = await fs.readFile(filePathUnused).then((c) => c.toString())
 
   return { document, workspace: workspaceUpdate }
+}
+
+export async function renameFileCurrent(app: Electron.App) {
+  const { workspace } = await fetchWorkspace(app)
 }

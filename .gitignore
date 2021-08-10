@@ -7,9 +7,5 @@ types/env.d.o
 *.code-workspace
 
 .eslintcache
-
-# Mongo Explorer plugin
-.idea/**/mongoSettings.xml
-
-# File-based project format
-*.iws
+# Keep environment variables out of version control
+.env

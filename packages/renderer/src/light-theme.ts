@@ -29,6 +29,15 @@ export const lightTheme = {
       fontWeight: '600',
       color: '#0f0f0f',
     },
+    { tag: t.strikethrough, fontStyle: 'italic', color: 'red', textDecoration: 'line-through' },
+    {
+      tag: t.heading1,
+      class: 'cmt-heading-1',
+    },
+    {
+      tag: t.heading2,
+      class: 'cmt-heading-2',
+    },
     // { tag: tags.meta, class: "cmt-meta", fontFamily: "iAWriterDuospace-Italic" },
     {
       tag: otherTags.fence,
@@ -49,7 +58,8 @@ export const lightTheme = {
     },
     { tag: t.annotation, fontWeight: 'bold' },
     { tag: t.literal, fontFamily: 'iA Writer Duospace' },
-    { tag: t.monospace, fontFamily: "iAWriterMonoS-Regular" },
+    { tag: t.monospace, fontFamily: 'iAWriterMonoS-Regular' },
+    // { tag: t.meta, fontFamily: 'iAWriterMonoS-Regular', color: 'red' },
     // { tag: t.fence, fontFamily: monospaceFontFamily, fontSize: '30px' },
     // { tag: t.keyword, fontFamily: monospaceFontFamily },
     // { tag: t.variableName, fontFamily: monospaceFontFamily },

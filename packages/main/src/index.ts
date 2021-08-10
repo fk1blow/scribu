@@ -1,13 +1,13 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { URL } from 'url'
+import fs from 'fs-extra'
 
 import { showAppMenu } from './menu'
 
-import {
-  fetchWorkspace,
-  writeToFileCurrent,
-} from './file-handlers'
+import { fetchWorkspace, writeToFileCurrent } from './file-handlers'
+
+import type sqlite3 from 'sqlite3'
 
 const isSingleInstance = app.requestSingleInstanceLock()
 
@@ -48,6 +48,7 @@ const createWindow = async () => {
     width: 600,
     height: 500,
     show: false, // Use 'ready-to-show' event to show window
+    // titleBarStyle: 'hiddenInset',
     webPreferences: {
       preload: join(__dirname, '../../preload/dist/index.cjs'),
       contextIsolation: env.MODE !== 'test', // Spectron tests can't work with contextIsolation: true
@@ -113,22 +114,59 @@ if (env.PROD) {
 
 // various stuff tbd
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   ipcMain.handle('app-ready', async (evt) => {
     const workspace = await fetchWorkspace(app)
     evt.sender.send('workspace-ready', workspace)
   })
 
-  ipcMain.handle(
-    'write-to-current-file',
-    async (evt, data: string) => {
-      writeToFileCurrent(app, data)
-    },
-  )
+  ipcMain.handle('write-to-current-file', async (evt, data: string) => {
+    writeToFileCurrent(app, data)
+  })
 
   // ipcMain.handle('write-current-file', (_evt, content: string) =>
   //   writeToFileCurrent(app, content),
   // )
 
   showAppMenu(app, mainWindow?.webContents)
+
+
+
+
+  // ------------------------------------------
+
+  const sqlite3 = require('sqlite3').verbose()
+  const db: sqlite3.Database = new sqlite3.Database(':memory:')
+
+  db.serialize(function () {
+    // db.run('CREATE TABLE lorem (info TEXT)')
+    // db.run('CREATE VIRTUAL TABLE docs USING fts5(sender, title, body);')
+
+    db.run('CREATE TABLE documents (body);')
+    // db.run('CREATE VIRTUAL TABLE documents USING FTS5(body);')
+    // db.run(`INSERT INTO posts(title,body)
+    // VALUES('2021-07-26 (4).md', '${foo}');`)
+
+    db.run(`INSERT INTO documents VALUES ('no bears allowed to have ideeas')`)
+    const stmt = db.prepare('INSERT INTO documents VALUES (?)')
+    // stmt.run(`${foo}`)
+    stmt.finalize()
+
+    // const stmt = db.prepare('INSERT INTO lorem VALUES (?)')
+    // for (let i = 0; i < 10; i++) {
+    //   stmt.run('Ipsum ' + i)
+    // }
+    // stmt.finalize()
+
+    // db.each('SELECT rowid AS id, info FROM lorem', function (err, row) {
+    //   console.log(row.id + ': ' + row.info)
+    // })
+
+    // db.each("SELECT highlight(documents, 0, '<b>', '</b>') body FROM documents where documents like '%dee%';", function (err, row) {
+    // db.each("SELECT * FROM documents where body like '%be%';", function (err, row) {
+    //   console.log('---', row)
+    // })
+  })
+
+  db.close()
 })

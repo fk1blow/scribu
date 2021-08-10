@@ -63,9 +63,19 @@ export const showAppMenu = (
           accelerator: 'CommandOrControl+n',
           click: async () => {
             const newWorkspace = await createAndReplaceFileCurrent(app)
-            webContents?.send('filecurrent-changed', newWorkspace)
+            webContents?.send('file-new', newWorkspace)
           },
         },
+
+        {
+          label: 'Rename File',
+          accelerator: 'CommandOrControl+shift+r',
+          click: async () => {
+            console.log('pshould rename file')
+          },
+        },
+
+        { type: 'separator' },
 
         {
           label: 'Copy',

@@ -2,16 +2,16 @@ import * as React from 'react'
 import { BlockInfo, EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view'
 import { Extension, Compartment, EditorSelection } from '@codemirror/state'
 import { LanguageSupport, syntaxTree } from '@codemirror/language'
-import docSizePlugin from './docSizePlugin'
+import docSizePlugin from '../../../docSizePlugin'
 import { tags, styleTags, Tag } from '@codemirror/highlight'
 import { HighlightStyle, tags as t } from '@codemirror/highlight'
-import { MarkdownConfig } from 'lezer-markdown'
-import { lightTheme } from './light-theme'
-import { testKeymap } from './test-keybindings'
+import { MarkdownConfig, Strikethrough, GFM } from 'lezer-markdown'
+import { lightTheme } from '../../../light-theme'
+import { testKeymap } from '../../../test-keybindings'
 import { GutterMarker } from '@codemirror/gutter'
-import headingsGutter from './headings-gutter'
+import headingsGutter from '../../../headings-gutter'
 
-type Bundle = typeof import('./codemirror')
+type Bundle = typeof import('../../../codemirror')
 
 interface Theme {
   base: Extension
@@ -48,7 +48,7 @@ export default function useCodemirror(): [
     let view: null | EditorView
 
     async function createEditor() {
-      const codemirror = await import('./codemirror')
+      const codemirror = await import('../../../codemirror')
 
       if (!targetEl || didCancel) {
         return
@@ -119,7 +119,6 @@ async function loadExentions({
   themeCompartment: Compartment
   highlightCompartment: Compartment
 }): Promise<Extension> {
-
   let languageSupport: null | LanguageSupport = null
 
   const md = await import('@codemirror/lang-markdown')
@@ -150,11 +149,68 @@ async function loadExentions({
     ],
   }
 
+  const UnderlinedHeadings: MarkdownConfig = {
+    defineNodes: ['InlineFence'],
+    parseInline: [
+      {
+        name: 'UnderlinedHeading',
+        parse(cx, next, pos) {
+          console.log('pos: ', pos)
+          console.log('next: ', next)
+          // if (next == 45)
+          //   return cx.addDelimiter(HighlightDelim, pos, pos + 1, true, true)
+          // return -1
+          return 1
+        },
+        after: 'Entity',
+        // before: 'InlineCode',
+      },
+    ],
+    props: [
+      styleTags({
+        InlineFence: Tag.define(t.heading2),
+      }),
+    ],
+  }
+
+  const strikethroughTags = {
+    strikethrough: Tag.define(),
+  }
+
+  const StrikethroughDelim = {
+    resolve: 'Strikethrough',
+    mark: 'StrikethroughMark',
+  }
+
+  const Strikethrough = {
+    defineNodes: ['Strikethrough', 'StrikethroughMark'],
+    parseInline: [
+      {
+        name: 'Strikethrough',
+        parse(cx, next, pos) {
+          if (next != 126 /* '~' */ || cx.char(pos + 1) != 126) {
+            return -1
+          }
+          return cx.addDelimiter(StrikethroughDelim, pos, pos + 2, true, true)
+        },
+        after: 'Emphasis',
+      },
+    ],
+    props: [
+      styleTags({
+        StrikethroughMark: t.processingInstruction,
+        'Strikethrough/...': strikethroughTags.strikethrough,
+      }),
+    ],
+  }
+
   languageSupport = md.markdown({
     codeLanguages: codemirror.languageData.languages.filter(
       (d) => d.name !== 'Markdown',
     ),
-    extensions: [MarkInlineFence],
+    // extensions: [MarkInlineFence],
+    extensions: [Strikethrough],
+    // extensions: [UnderlinedHeadings],
     // extensions: [],
   })
 
