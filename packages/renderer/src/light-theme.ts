@@ -29,16 +29,6 @@ export const lightTheme = {
       fontWeight: '600',
       color: '#0f0f0f',
     },
-    { tag: t.strikethrough, fontStyle: 'italic', color: 'red', textDecoration: 'line-through' },
-    {
-      tag: t.heading1,
-      class: 'cmt-heading-1',
-    },
-    {
-      tag: t.heading2,
-      class: 'cmt-heading-2',
-    },
-    // { tag: tags.meta, class: "cmt-meta", fontFamily: "iAWriterDuospace-Italic" },
     {
       tag: otherTags.fence,
       color: 'red',

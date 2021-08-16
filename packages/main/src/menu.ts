@@ -37,6 +37,16 @@ export const showAppMenu = (
       label: 'File',
       submenu: [
         {
+          label: 'Open',
+          accelerator: 'CommandOrControl+o',
+          click: async () => {
+            console.log('open not implemented')
+            // const newWorkspace = await createAndReplaceFileCurrent(app)
+            // webContents?.send('file-new', newWorkspace)
+          },
+        },
+
+        {
           label: 'Save File As',
           accelerator: 'CommandOrControl+shift+s',
           click: () => {

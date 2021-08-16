@@ -30,15 +30,15 @@ if (env.MODE === 'development') {
   app
     .whenReady()
     .then(() => import('electron-devtools-installer'))
-    .then(
-      ({ default: installExtension, REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS }) =>
-        installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS], {
-          loadExtensionOptions: {
-            allowFileAccess: true,
-          },
-        }),
-    )
-    .catch((e) => console.error('Failed install extension:', e))
+    // .then(
+    //   ({ default: installExtension, REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS }) =>
+    //     installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS], {
+    //       loadExtensionOptions: {
+    //         allowFileAccess: true,
+    //       },
+    //     }),
+    // )
+    // .catch((e) => console.error('Failed install extension:', e))
 }
 
 let mainWindow: BrowserWindow | null = null
