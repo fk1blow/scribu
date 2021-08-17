@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 
 import useCodemirror, { getTheme } from '../../hooks/useCodemirror'
 import TabsBar from '../tabs-bar/TabsBar'
-import StatusBar from '/@/features/editor/components/status-bar/StatusBar'
+import StatusBar from '@renderer/features/editor/components/status-bar/StatusBar'
 import { ViewUpdate } from '@codemirror/view'
 
 const EditorWrapper = styled.div`
@@ -26,7 +26,8 @@ const EditorWrapper = styled.div`
 `
 
 interface Props {
-  workspace: Workspace.Application | null
+  // workspace: Workspace.Application | null
+  workspace: any
   document: string
   onUpdate: (doc: string) => void
 }

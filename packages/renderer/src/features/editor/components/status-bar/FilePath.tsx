@@ -2,7 +2,8 @@ import styled from '@emotion/styled'
 import React from 'react'
 
 interface Props {
-  workspace: Workspace.Application
+  // workspace: Workspace.Application
+  workspace: any
 }
 
 const StyledFilePath = styled.div`

@@ -11,7 +11,8 @@ const StyledStatusBar = styled.div`
 `
 
 interface Props {
-  workspace: Workspace.Application
+  // workspace: Workspace.Application
+  workspace: any
 }
 
 const StatusBar: React.FC<Props> = ({ workspace }: Props) => {

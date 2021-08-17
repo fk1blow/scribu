@@ -1,22 +1,25 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "sourceMap": true,
-    "moduleResolution": "Node",
+    "allowJs": true,
+    "module": "commonjs",
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "esModuleInterop": true,
     "noImplicitAny": false,
-    "isolatedModules": true,
-    "types": [
-      "vite/client",
-      "node",
-      "sqlite3"
-    ],
-    "typeRoots": [
-      "node_modules/@types",
-    ],
-    "lib": ["ESNext"]
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"],
+      "@renderer/lib/*": ["packages/renderer/src/lib/*"],
+      "@renderer/features/*": ["packages/renderer/src/features/*"],
+      "@main/*": ["packages/main/src/*"]
+    }
   },
+  // "include": ["packages/**/*"]
 }

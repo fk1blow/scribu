@@ -2,19 +2,16 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 const apiKey = 'electron'
 
-/**
- * @see https://github.com/electron/electron/issues/21437#issuecomment-573522360
- */
-const api: ElectronApi = {
+const api = {
   versions: process.versions,
-  signalAppReady: () => ipcRenderer.invoke('app-ready'),
-  getWorkspace: () => ipcRenderer.invoke('get-workspace'),
-  listenToMain: (event, listener) => ipcRenderer.on(event, listener),
-  writeToCurrentFile: (content: string) =>
-    ipcRenderer.invoke('write-to-current-file', content),
+  // signalAppReady: () => ipcRenderer.invoke('app-ready'),
+  // getWorkspace: () => ipcRenderer.invoke('get-workspace'),
+  // listenToMain: (event, listener) => ipcRenderer.on(event, listener),
+  // writeToCurrentFile: (content: string) =>
+  //   ipcRenderer.invoke('write-to-current-file', content),
 }
 
-if (import.meta.env.MODE !== 'test') {
+if (process.env.MODE !== 'test') {
   /**
    * The "Main World" is the JavaScript context that your main renderer code runs in.
    * By default, the page you load in your renderer executes code in this world.
@@ -47,7 +44,7 @@ if (import.meta.env.MODE !== 'test') {
 
   deepFreeze(api)
 
-  window[apiKey] = api
+  // window[apiKey] = api
 
   // Need for Spectron tests
   window.electronRequire = require

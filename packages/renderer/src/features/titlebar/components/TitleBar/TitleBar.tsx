@@ -2,7 +2,8 @@ import styled from '@emotion/styled'
 import React from 'react'
 
 interface Props {
-  workspace: Workspace.Application | null
+  // workspace: Workspace.Application | null
+  workspace: any
 }
 
 const StyledTitleBar = styled.div`
@@ -10,7 +11,7 @@ const StyledTitleBar = styled.div`
   background: #fffbf2c9;
 `
 
-const TitleBar: React.FC<Props> = ({ workspace }: props) => {
+const TitleBar: React.FC<Props> = ({ workspace }: Props) => {
   return (
     <StyledTitleBar>iz me TitleBar</StyledTitleBar>
   )
