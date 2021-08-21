@@ -16,7 +16,7 @@
     "sourceType": "module"
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslinss"
   ],
   "ignorePatterns": [
     "types/env.d.ts",

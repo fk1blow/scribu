@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useRef } from 'react'
 import { debounce } from 'lodash'
 import styled from '@emotion/styled'
+
+import './assets/styles/index.scss'
 
 import { useElectron } from '@renderer/lib/use-electron/use-electron'
 // import { Editor } from './features/editor'
 
-import './assets/styles/index.scss'
-// import TitleBar from '@renderer/features/titlebar/components/TitleBar/TitleBar'
+import TitleBar from '@renderer/features/titlebar/components/TitleBar/TitleBar'
 
 const StyledApp = styled.div`
   background: #fffbf2;
@@ -23,51 +23,48 @@ export interface DocumentAndWorkspace {
 }
 
 export default function App() {
+  // const { signalAppReady, listenToMain, writeToCurrentFile } = useElectron()
+  // const [editorKeyRef, setEditorKeyRef] = useState('pristine')
+  // // const [workspace, setWorkspace] = useState<Workspace.Application | null>(null)
+  // const [workspace, setWorkspace] = useState<any>(null)
+  // const [document, setDocument] = useState('')
 
-  return <div>not ready</div>
+  // const workspaceChanged = useCallback(
+  //   // (data: { document: string; workspace: Workspace.Application }) => {
+  //   (data: { document: string; workspace: any }) => {
+  //     setEditorKeyRef(data.workspace.fileCurrent.path)
 
-  const { signalAppReady, listenToMain, writeToCurrentFile } = useElectron()
-  const [editorKeyRef, setEditorKeyRef] = useState('pristine')
-  // const [workspace, setWorkspace] = useState<Workspace.Application | null>(null)
-  const [workspace, setWorkspace] = useState<any>(null)
-  const [document, setDocument] = useState('')
+  //     setWorkspace(data.workspace)
+  //     setDocument(data.document)
 
-  const workspaceChanged = useCallback(
-    // (data: { document: string; workspace: Workspace.Application }) => {
-    (data: { document: string; workspace: any }) => {
-      setEditorKeyRef(data.workspace.fileCurrent.path)
+  //     window.document.title = data.workspace.fileCurrent.name
+  //   },
+  //   [workspace],
+  // )
 
-      setWorkspace(data.workspace)
-      setDocument(data.document)
+  // const onUpdateDocument = useCallback(
+  //   debounce((content) => {
+  //     if (!workspace?.fileCurrent.path.length) return
+  //     writeToCurrentFile(content)
+  //   }, 500),
+  //   [workspace],
+  // )
 
-      window.document.title = data.workspace.fileCurrent.name
-    },
-    [workspace],
-  )
+  // useEffect(() => {
+  //   listenToMain('workspace-ready', (_evt, data: DocumentAndWorkspace) => {
+  //     workspaceChanged(data)
+  //   })
 
-  const onUpdateDocument = useCallback(
-    debounce((content) => {
-      if (!workspace?.fileCurrent.path.length) return
-      writeToCurrentFile(content)
-    }, 500),
-    [workspace],
-  )
+  //   listenToMain('file-new', (_evt, data: DocumentAndWorkspace) => {
+  //     workspaceChanged(data)
+  //   })
 
-  useEffect(() => {
-    listenToMain('workspace-ready', (_evt, data: DocumentAndWorkspace) => {
-      workspaceChanged(data)
-    })
-
-    listenToMain('file-new', (_evt, data: DocumentAndWorkspace) => {
-      workspaceChanged(data)
-    })
-
-    signalAppReady()
-  }, [])
+  //   signalAppReady()
+  // }, [])
 
   return (
     <StyledApp>
-      {/* <TitleBar workspace={workspace} /> */}
+      <TitleBar />
 
       {/* <Editor
         key={editorKeyRef}
