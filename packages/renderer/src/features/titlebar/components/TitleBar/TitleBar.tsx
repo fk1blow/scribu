@@ -20,7 +20,7 @@ const TitleBar: React.FC = () => {
 useHotkeys('ctrl+p, cmd+p', () => console.log('command us!'));
 
   return (
-    <StyledTitleBar>Scribu / Scribu MVP</StyledTitleBar>
+    <StyledTitleBar>Scribu / Yassim</StyledTitleBar>
   )
 }
 
