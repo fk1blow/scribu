@@ -19,5 +19,9 @@
     "test/**/__snapshots__": true,
     "yarn.lock": true,
     "*.{css,sass,scss}.d.ts": true
-  }
+  },
+  "files.exclude": {
+    "**/node_modules": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

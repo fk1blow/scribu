@@ -2,10 +2,10 @@
  * Base webpack config used across other specific configs
  */
 
-import path from 'path';
-import webpack from 'webpack';
-import webpackPaths from './webpack.paths.js';
-import { dependencies as externals } from '../../build/app/package.json';
+import path from 'path'
+import webpack from 'webpack'
+import webpackPaths from './webpack.paths.js'
+import { dependencies as externals } from '../../build/app/package.json'
 
 export default {
   externals: [...Object.keys(externals || {})],
@@ -39,6 +39,9 @@ export default {
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: [webpackPaths.srcPath, 'node_modules'],
+    alias: {
+      '@features': path.join(webpackPaths.srcRendererPath, 'features'),
+    },
   },
 
   plugins: [
@@ -46,4 +49,4 @@ export default {
       NODE_ENV: 'production',
     }),
   ],
-};
+}
