@@ -24,7 +24,7 @@ const commands: RunnableCommand[] = [
 ]
 
 const StyledDiv = styled.div`
-  width: 60%;
+  width: 550px;
 `
 
 interface Props {
