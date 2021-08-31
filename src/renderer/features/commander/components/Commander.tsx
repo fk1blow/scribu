@@ -21,6 +21,14 @@ const commands: RunnableCommand[] = [
     title: 'Rename File',
     shortcut: 'cmd+r',
   },
+  {
+    title: 'Open Project',
+    shortcut: 'cmd+shift+o',
+  },
+  {
+    title: 'Open File',
+    shortcut: 'cmd+o',
+  },
 ]
 
 const StyledDiv = styled.div`
