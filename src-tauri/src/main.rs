@@ -21,7 +21,7 @@ fn main() {
   // test_watch();
 
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![commands::workspace::get_workspace])
+    .invoke_handler(tauri::generate_handler![commands::workspace::prepare_workspace])
     .menu(menu)
     .on_menu_event(|event| match event.menu_item_id() {
       "quit" => {

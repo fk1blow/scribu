@@ -18,7 +18,7 @@ pub struct Workspace {
 }
 
 #[tauri::command]
-pub fn get_workspace() -> Result<Workspace, String> {
+pub fn prepare_workspace() -> Result<Workspace, String> {
   match read_or_create_workspace() {
     Err(_err) => Err(
       json!({

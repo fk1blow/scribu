@@ -105,6 +105,8 @@ export function getTheme(
       base: codemirror.themeOneDark.oneDarkTheme,
       highlight: codemirror.themeOneDark.oneDarkHighlightStyle,
     }
+  } else if (kind === "light") {
+    return lightTheme
   }
 
   return grayTheme

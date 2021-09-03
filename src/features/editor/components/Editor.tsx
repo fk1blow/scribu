@@ -1,12 +1,11 @@
-import { EditorState } from "@codemirror/state"
-import { ViewUpdate } from "@codemirror/view"
-import styled from "@emotion/styled"
-import React from "react"
-import useCodemirror, { getTheme } from "../hooks/useCodemirror"
+import { EditorState } from '@codemirror/state'
+import { ViewUpdate } from '@codemirror/view'
+import styled from '@emotion/styled'
+import React from 'react'
+import useCodemirror, { getTheme } from '../hooks/useCodemirror'
 
 const EditorWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   height: 100vh;
 
   .cm-scroller {
@@ -30,7 +29,7 @@ interface Props {
 
 const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
   const [editor, editorRef] = useCodemirror()
-  const [theme, setTheme] = React.useState<"light" | "dark" | "gray">("gray")
+  const [theme, setTheme] = React.useState<'light' | 'dark' | 'gray'>('gray')
   const themeRef = React.useRef(theme)
 
   const fileStateMapRef = React.useRef<Record<string, EditorState>>({})
@@ -77,7 +76,7 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
           if (update.docChanged) {
             onUpdate(update.state.doc.toString())
           }
-        }
+        },
       )
 
       const initialState = codemirror.state.EditorState.create({
@@ -95,19 +94,15 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
 
   return (
     <EditorWrapper>
-      <header>header stuff here</header>
-
-      <div style={{ display: "flex", flex: 1, minHeight: "0px" }}>
-        <div style={{ flex: 1, overflow: "auto", justifyContent: "stretch" }}>
+      <div style={{ display: 'flex', flex: 1, minHeight: '0px' }}>
+        <div style={{ flex: 1, overflow: 'auto', justifyContent: 'stretch' }}>
           <div
             className="codemirror-container"
             ref={editorRef}
-            style={{ height: "100%" }}
+            style={{ height: '100%' }}
           />
         </div>
       </div>
-
-      <footer>footer stuff</footer>
     </EditorWrapper>
   )
 }

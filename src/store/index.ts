@@ -1,10 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit"
+import workspaceSlice from "../features/editor/store/workspace-slice"
 
 export const store = configureStore({
   reducer: {
-    // posts: postsReducer,
-    // comments: commentsReducer,
-    // users: usersReducer,
+    workspace: workspaceSlice
   },
 })
 
