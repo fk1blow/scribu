@@ -45,10 +45,4 @@ export const workspaceSlice = createSlice({
   },
 })
 
-// export const { getWorkspace } = workspaceSlice.actions
-
-// export const workspaceNotifications = (state: RootState) =>
-//   state.workspace.notifications
-
-
 export default workspaceSlice.reducer

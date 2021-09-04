@@ -225,6 +225,7 @@ async function loadExentions({
     // codemirror.gutter.gutter(headingsGutter),
     // codemirror.gutter.lineNumbers(),
     // codemirror.fold.foldGutter(),
+    EditorView.lineWrapping,
     codemirror.view.highlightSpecialChars(),
     codemirror.history.history(),
     codemirror.view.drawSelection(),

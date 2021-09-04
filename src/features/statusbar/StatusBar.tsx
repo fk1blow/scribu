@@ -12,7 +12,7 @@ const StyledStatusBar = styled.div`
 
   /* hardcoded */
   /* TODO go through a theme */
-  color: #1a1a1aa0;
+  color: #1a1a1a75;
 `
 
 interface Props {}

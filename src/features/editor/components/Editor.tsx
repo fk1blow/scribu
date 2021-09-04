@@ -6,15 +6,18 @@ import useCodemirror, { getTheme } from '../hooks/useCodemirror'
 
 const EditorWrapper = styled.div`
   display: flex;
-  height: 100vh;
+  height: 100%;
+  flex: 1 1;
 
   .cm-scroller {
-    width: calc(800px + 180px);
-    padding-left: 90px;
-    padding-right: 90px;
-    margin: 0 auto;
+    flex: 1 1;
     height: 100%;
   }
+
+  .cm-content {
+    max-width: 900px;
+    margin: 0 auto;
+  }}
 
   .cm-editor {
     height: 100%;
