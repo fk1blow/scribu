@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
+use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, window};
 
 pub fn get_menu() -> Menu {
   #[allow(unused_mut)]
@@ -38,6 +38,10 @@ pub fn get_menu() -> Menu {
     .add_native_item(MenuItem::Copy)
     .add_native_item(MenuItem::Paste);
 
+  let window_menu = Menu::new()
+    .add_item(CustomMenuItem::new("reload_window", "Reload").accelerator("CmdOrControl+R"))
+    .add_item(CustomMenuItem::new("minimize_window", "Minimize").accelerator("Cmd+M"));
+
   // let test_menu = Menu::new()
   //   .add_item(CustomMenuItem::new(
   //     "selected/disabled".to_string(),
@@ -52,4 +56,5 @@ pub fn get_menu() -> Menu {
     // .add_submenu(Submenu::new("Other menu", test_menu))
     .add_submenu(Submenu::new("File", file_menu))
     .add_submenu(Submenu::new("Edit", edit_menu))
+    .add_submenu(Submenu::new("Window", window_menu))
 }

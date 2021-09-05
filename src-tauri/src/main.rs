@@ -14,6 +14,9 @@ fn main() {
       commands::workspace::prepare_workspace
     ])
     .menu(menu::get_menu())
+    .on_page_load(|window, _| {
+      window.maximize();
+    })
     .on_menu_event(|event| match event.menu_item_id() {
       "quit" => {
         std::process::exit(0);
@@ -21,9 +24,12 @@ fn main() {
       "close" => {
         event.window().close().unwrap();
       }
-      // "copy" => {
-      //   println!("asdasdasdasd")
-      // }
+      "reload_window" => {
+        event.window().emit("tauri://window/reload", "".to_string());
+      }
+      "minimize_window" => {
+        event.window().minimize();
+      }
       _ => {}
     })
     .run(tauri::generate_context!())

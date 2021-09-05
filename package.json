@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "concurrently -p \"[{name}]\" -n \"front-end,tauri\" -c \"bgGreen.bold,bgCyan.bold\" \"yarn dev:web\" \"yarn dev:tauri\"",
-    "build": "tsc && vite build",
+    "build:web": "tsc && vite build",
+    "build:tauri": "yarn build && tauri build",
     "serve": "vite preview",
     "tauri": "tauri",
     "dev:tauri": "tauri dev",
@@ -36,6 +37,7 @@
     "fuse.js": "^6.4.6",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
+    "react-hotkeys-hook": "^3.4.0",
     "react-redux": "^7.2.4",
     "sass": "^1.39.0"
   },
