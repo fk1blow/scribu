@@ -8,8 +8,6 @@ use tauri::api::{file::read_string, path::config_dir};
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct CurrentFile {
   path: String,
-  filename: String,
-  contents: String,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
@@ -31,7 +29,7 @@ pub fn prepare_workspace() -> Result<Workspace, String> {
     ),
     Ok(workspace) => match serde_json::from_str::<Workspace>(&workspace) {
       Ok(m) => Ok(m),
-      Err(e) => Err(
+      Err(_e) => Err(
         json!({
           "error": {
             "message": "cannot deserialize workspace.json",
