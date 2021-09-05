@@ -14,9 +14,17 @@ fn main() {
       commands::workspace::prepare_workspace
     ])
     .menu(menu::get_menu())
-    .on_page_load(|window, _| {
-      window.maximize();
-    })
+    // see https://github.com/tauri-apps/tauri/issues/2521
+    // .setup(|app| {
+    //   app.create_window("l", url, setup)
+    //   Ok(())
+    // }
+
+    // can be configured through tauri.conf.json
+    // .on_page_load(|window, _| {
+    //   window.maximize();
+    // })
+
     .on_menu_event(|event| match event.menu_item_id() {
       "quit" => {
         std::process::exit(0);
@@ -29,6 +37,9 @@ fn main() {
       }
       "minimize_window" => {
         event.window().minimize();
+      }
+      "open_file" => {
+        event.window().emit("tauri://file/open", "".to_string());
       }
       _ => {}
     })

@@ -42,6 +42,11 @@ pub fn prepare_workspace() -> Result<Workspace, String> {
   }
 }
 
+// #[tauri::command]
+// pub fn replace_current_file() -> Result<Workspace, String> {
+//
+// }
+
 fn read_or_create_workspace() -> Result<std::string::String, std::io::Error> {
   let user_config_dir = config_dir();
 

@@ -17,7 +17,7 @@ const initialState: Workspace = {
 export const fetchWorkspace = createAsyncThunk(
   'workspace/fetchWorkspace',
   async () => {
-    return useScribuApi().prepareWorkspace()
+    return useScribuApi().getWorkspace()
   },
 )
 
@@ -34,6 +34,11 @@ export const saveCurrentFile = createAsyncThunk(
     useScribuApi().saveCurrentFile(payload),
 )
 
+export const replaceCurrentFile = createAsyncThunk(
+  'workspace/replaceCurrentFile',
+  async (payload: string) => useScribuApi().replaceCurrentFile(payload),
+)
+
 export const workspaceSlice = createSlice({
   name: 'document',
 
@@ -47,12 +52,23 @@ export const workspaceSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspace.fulfilled, (state, action) => {
-      state.currentFile.path = action.payload.path
+      state.currentFile = action.payload.currentFile
       state.notifications.push({ type: WorkspaceStatus.WorkspacePrepared })
       state.status = WorkspaceStatus.WorkspacePrepared
     })
 
     builder.addCase(fetchWorkspace.rejected, (state, action) => {
+      state.notifications.push({ type: WorkspaceStatus.WorkspaceLoadError })
+      state.status = WorkspaceStatus.WorkspaceLoadError
+    })
+
+    builder.addCase(replaceCurrentFile.fulfilled, (state, action) => {
+      state.currentFile = action.payload.currentFile
+      state.notifications.push({ type: WorkspaceStatus.WorkspacePrepared })
+      state.status = WorkspaceStatus.WorkspacePrepared
+    })
+
+    builder.addCase(replaceCurrentFile.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.WorkspaceLoadError })
       state.status = WorkspaceStatus.WorkspaceLoadError
     })
@@ -68,7 +84,10 @@ export const workspaceSlice = createSlice({
       state.status = WorkspaceStatus.DocumentLoadError
     })
 
-    builder.addCase(saveCurrentFile.fulfilled)
+    builder.addCase(saveCurrentFile.rejected, (state, action) => {
+      state.notifications.push({ type: WorkspaceStatus.DocumentSaveError })
+      state.status = WorkspaceStatus.DocumentSaveError
+    })
   },
 })
 

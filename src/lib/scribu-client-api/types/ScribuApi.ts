@@ -1,7 +1,8 @@
 export interface ScribuApi {
-  prepareWorkspace: () => Promise<CurrentFile>
+  getWorkspace: () => Promise<Workspace>
   getFileInWorkspace: (path: string) => Promise<string>
-  saveCurrentFile: (payload: { path: string; contents: string }) => Promise<any>
+  saveCurrentFile: (payload: { path: string; contents: string }) => Promise<void>
+  replaceCurrentFile: (payload: string) => Promise<Workspace>
 }
 
 export interface CurrentFile {
@@ -14,6 +15,7 @@ export enum WorkspaceStatus {
   WorkspacePristine = 'WorkspacePristine',
   DocumentLoaded = 'DocumentLoaded',
   DocumentLoadError = 'DocumentLoadError',
+  DocumentSaveError = 'DocumentSaveError',
 }
 
 export interface Notification {

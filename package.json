@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "concurrently -p \"[{name}]\" -n \"front-end,tauri\" -c \"bgGreen.bold,bgCyan.bold\" \"yarn dev:web\" \"yarn dev:tauri\"",
     "build:web": "tsc && vite build",
-    "build:tauri": "yarn build && tauri build",
+    "build:tauri": "yarn build:web && yarn tauri build",
     "serve": "vite preview",
     "tauri": "tauri",
     "dev:tauri": "tauri dev",

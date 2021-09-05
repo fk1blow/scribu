@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "scribu",
+    "productName": "Scribu",
     "version": "0.1.0"
   },
   "build": {
@@ -76,9 +76,10 @@
         "width": 800,
         "height": 600,
         "resizable": true,
+        "maximized": true,
         "fullscreen": false,
-        "fileDropEnabled": true,
-        "decorations": true
+        "decorations": true,
+        "fileDropEnabled": true
       }
     ],
     "security": {

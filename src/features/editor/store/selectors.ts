@@ -26,3 +26,8 @@ export const documentContentSelector = createSelector(
   (state: RootState) => state.workspace,
   (item) => item.document || ''
 )
+
+export const workspaceSelector = createSelector(
+  (state: RootState) => state.workspace,
+  (item) => item
+)
