@@ -1,10 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { useScribuApi } from '../../../lib/scribu-client-api'
 import {
   WorkspaceStatus,
   Workspace,
 } from '../../../lib/scribu-client-api/types/ScribuApi'
-import type { RootState } from '../../../store'
 
 const initialState: Workspace = {
   currentFile: {
@@ -37,6 +36,11 @@ export const saveCurrentFile = createAsyncThunk(
 export const replaceCurrentFile = createAsyncThunk(
   'workspace/replaceCurrentFile',
   async (payload: string) => useScribuApi().replaceCurrentFile(payload),
+)
+
+export const createNewFile = createAsyncThunk(
+  'workspace/createNewFile',
+  async (payload: string) => useScribuApi().createNewFile(payload),
 )
 
 export const workspaceSlice = createSlice({
@@ -87,6 +91,17 @@ export const workspaceSlice = createSlice({
     builder.addCase(saveCurrentFile.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.DocumentSaveError })
       state.status = WorkspaceStatus.DocumentSaveError
+    })
+
+    builder.addCase(createNewFile.fulfilled, (state, action) => {
+      state.currentFile = action.payload.currentFile
+      state.notifications.push({ type: WorkspaceStatus.DocumentLoaded })
+      state.status = WorkspaceStatus.DocumentLoaded
+    })
+
+    builder.addCase(createNewFile.rejected, (state, action) => {
+      state.notifications.push({ type: WorkspaceStatus.DocumentNewError })
+      state.status = WorkspaceStatus.DocumentNewError
     })
   },
 })

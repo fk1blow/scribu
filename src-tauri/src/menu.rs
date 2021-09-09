@@ -2,19 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, window};
+use tauri::{CustomMenuItem, Menu, MenuItem, Submenu};
 
 pub fn get_menu() -> Menu {
   #[allow(unused_mut)]
-  let mut disable_item =
-    CustomMenuItem::new("disable-menu".to_string(), "Disable menu").accelerator("CmdOrControl+D");
+  // let mut disable_item =
+  //   CustomMenuItem::new("disable-menu".to_string(), "Disable menu").accelerator("CmdOrControl+D");
   #[allow(unused_mut)]
-  let mut test_item = CustomMenuItem::new("test".to_string(), "Test").accelerator("CmdOrControl+T");
-  #[cfg(target_os = "macos")]
-  {
-    disable_item = disable_item.native_image(tauri::NativeImage::MenuOnState);
-    test_item = test_item.native_image(tauri::NativeImage::Add);
-  }
+  // let mut test_item = CustomMenuItem::new("test".to_string(), "Test").accelerator("CmdOrControl+T");
+  // #[cfg(target_os = "macos")]
+  // {
+  //   disable_item = disable_item.native_image(tauri::NativeImage::MenuOnState);
+  //   test_item = test_item.native_image(tauri::NativeImage::Add);
+  // }
 
   // create a submenu
   // let my_sub_menu = Menu::new().add_item(disable_item);

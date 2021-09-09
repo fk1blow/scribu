@@ -6,7 +6,6 @@ import StatusBar from './features/statusbar/StatusBar'
 import HeaderBar from './features/headerbar/HeaderBar'
 import EditorManager from './features/editor/components/EditorManager'
 import { useScribuCommands } from './lib/scribu-commands/use-scribu-commands'
-import FileDropModal from './features/editor/components/FileDropModal'
 
 const StyledApp = styled.div`
   display: flex;

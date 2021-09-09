@@ -1,37 +1,18 @@
 import { fs, path } from '@tauri-apps/api'
 import { ScribuApi, Workspace, WorkspaceStatus } from '../types/ScribuApi'
 
-const emptyWorkspace: Workspace = {
-  currentFile: { path: '' },
-  status: WorkspaceStatus.WorkspacePristine,
-  notifications: [],
-}
-
-const readOrCreateWorkspace = () =>
+const readWorkspace = () =>
   path
-    .configDir()
-    .then((configDirPath) =>
-      path.join(configDirPath, 'scribu', 'workspace.json'),
-    )
+    .appDir()
+    .then((appDirPath) => path.join(appDirPath, 'workspace.json'))
     .then<Workspace>((workspacePath) => {
-      return (
-        fs
-          .readTextFile(workspacePath)
-          // cannot read scribu workspace.json so try to create an empty config
-          .catch((e) => {
-            return fs
-              .writeFile({
-                path: workspacePath,
-                contents: JSON.stringify(emptyWorkspace),
-              })
-              .then((_) => fs.readTextFile(workspacePath))
-          })
-          .then((r) => JSON.parse(r) as Workspace)
-      )
+      return fs
+        .readTextFile(workspacePath)
+        .then((r) => JSON.parse(r) as Workspace)
     })
 
-const replaceWorkspaceCurrentFile = (newPath: string) => {
-  return readOrCreateWorkspace()
+const replaceCurrentFilePath = (newPath: string) => {
+  return readWorkspace()
     .then((workspace) => ({
       ...workspace,
       currentFile: { path: newPath },
@@ -40,22 +21,55 @@ const replaceWorkspaceCurrentFile = (newPath: string) => {
       path
         .configDir()
         .then((configDirPath) =>
-          path.join(configDirPath, 'scribu', 'workspace.json'),
+          path.join(configDirPath, 'app.scribu.dev', 'workspace.json'),
         )
-        .then((path) =>
-          fs.writeFile({ path, contents: JSON.stringify(newWorkspace) }),
+        .then((workspaceJsonPath) =>
+          fs.writeFile({
+            path: workspaceJsonPath,
+            contents: JSON.stringify(newWorkspace),
+          }),
         )
-        .then(() => newWorkspace)
+        .then(() => newWorkspace),
+    )
+}
+
+const createNewFileInWorkspace = (newFilePath: string) => {
+  return readWorkspace()
+    .then((workspace) => ({
+      ...workspace,
+      currentFile: { path: newFilePath },
+    }))
+    .then((workspace) =>
+      path
+        .appDir()
+        .then((appDirPath) => path.join(appDirPath, 'workspace.json'))
+        .then((workspaceJsonPath) =>
+          Promise.all([
+            fs.writeFile({
+              path: newFilePath,
+              contents: '# new file bossule',
+            }),
+            fs.writeFile({
+              path: workspaceJsonPath,
+              contents: JSON.stringify({
+                ...workspace,
+                currentFile: { path: newFilePath },
+              }),
+            }),
+          ]).then((_) => workspace),
+        ),
     )
 }
 
 export const TauriAdapter: ScribuApi = {
-  getWorkspace: () => readOrCreateWorkspace(),
+  getWorkspace: () => readWorkspace(),
 
-  replaceCurrentFile: (path: string) => replaceWorkspaceCurrentFile(path),
+  replaceCurrentFile: (path: string) => replaceCurrentFilePath(path),
 
   getFileInWorkspace: (path: string) => fs.readTextFile(path),
 
   saveCurrentFile: (payload: { path: string; contents: string }) =>
     fs.writeFile(payload),
+
+  createNewFile: (path: string) => createNewFileInWorkspace(path)
 }

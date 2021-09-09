@@ -9,7 +9,8 @@ import {
   documentContentSelector,
 } from '../store/selectors'
 import { fetchCurrentFile, saveCurrentFile } from '../store/workspace-slice'
-import { window } from '@tauri-apps/api'
+// importing `window` will screw with vite's brain
+import { window as tauriWindow } from '@tauri-apps/api'
 
 const StyledEditorManager = styled.div`
   display: flex;
@@ -41,7 +42,7 @@ const EditorManager = ({}) => {
     dispatch(fetchCurrentFile(workspaceCurrentFile.path)).then((_) => {
       setEditorKeyRef(workspaceCurrentFile.path)
     })
-    window.appWindow.setTitle(workspaceCurrentFile.path)
+    tauriWindow.appWindow.setTitle(workspaceCurrentFile.path)
   }, [workspaceCurrentFile.path])
 
   return (

@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "Scribu",
+    "productName": "scribu",
     "version": "0.1.0"
   },
   "build": {
@@ -14,7 +14,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "app.scribu.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -71,16 +71,7 @@
       }
     },
     "windows": [
-      {
-        "title": "scribu",
-        "width": 800,
-        "height": 600,
-        "resizable": true,
-        "maximized": true,
-        "fullscreen": false,
-        "decorations": true,
-        "fileDropEnabled": true
-      }
+
     ],
     "security": {
       "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'"
