@@ -1,7 +1,9 @@
+import { redo } from '@codemirror/history'
 import { EditorState } from '@codemirror/state'
 import { ViewUpdate } from '@codemirror/view'
 import styled from '@emotion/styled'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import useCodemirror, { getTheme } from '../hooks/useCodemirror'
 
 const EditorWrapper = styled.div`
@@ -32,21 +34,44 @@ interface Props {
 
 const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
   const [editor, editorRef] = useCodemirror()
-  const [theme, setTheme] = React.useState<'light' | 'dark' | 'gray'>('gray')
+  const [theme, setTheme] = React.useState<'light' | 'dark' | 'gray'>('light')
   const themeRef = React.useRef(theme)
 
   const fileStateMapRef = React.useRef<Record<string, EditorState>>({})
+
+  useEffect(() => {
+    if (!editorRef || !editor) return
+
+    console.log('editor: ', editor)
+    console.log('editorRef: ', editorRef)
+    // console.log('targetEl: ', targetEl)
+    foo()
+  }, [editorRef, editor])
+
+  const foo = useCallback(() => {
+    console.log('editor.view: ', editor.view.scrollDOM)
+    // works
+    redo(editor.view)
+    // console.log('editor: ', editor)
+    // console.log('editorRef: ', editorRef)
+  }, [editorRef, editor])
+
+  useHotkeys('ctrl+shift+z', () => {
+    foo()
+  }, [editor])
 
   React.useEffect(() => {
     if (!editor) {
       return
     }
 
+    console.log('theme: ', theme)
+
     editor.setTheme(getTheme(editor.codemirror, theme))
   }, [editor, theme])
 
   // bootstrap codemirror
-  React.useEffect(() => {
+  useEffect(() => {
     if (!editor) return
 
     const state = fileStateMapRef.current[document]

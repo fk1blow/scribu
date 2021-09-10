@@ -36,11 +36,15 @@ pub fn get_menu() -> Menu {
   let edit_menu = Menu::new()
     .add_native_item(MenuItem::Cut)
     .add_native_item(MenuItem::Copy)
+    .add_native_item(MenuItem::Redo)
+    .add_native_item(MenuItem::Undo)
+    .add_item(CustomMenuItem::new("redo", "Redo").accelerator("CmdOrControl+Shift+z"))
     .add_native_item(MenuItem::Paste);
 
   let window_menu = Menu::new()
-    .add_item(CustomMenuItem::new("reload_window", "Reload").accelerator("CmdOrControl+R"))
-    .add_item(CustomMenuItem::new("minimize_window", "Minimize").accelerator("Cmd+M"));
+    .add_item(CustomMenuItem::new("reload_window", "Reload").accelerator("CmdOrControl+R"));
+    // broken on Ubuntu
+    // .add_item(CustomMenuItem::new("minimize_window", "Minimize").accelerator("Cmd+M"));
 
   // let test_menu = Menu::new()
   //   .add_item(CustomMenuItem::new(

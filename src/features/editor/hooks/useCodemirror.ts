@@ -12,6 +12,8 @@ import { testKeymap } from "../plugins/test-keybindings"
 import { GutterMarker } from "@codemirror/gutter"
 import headingsGutter from "../plugins/heading-gutters"
 
+import * as codemirror from '../../codemirror'
+
 type Bundle = typeof import("../../codemirror")
 
 interface Theme {
@@ -31,9 +33,10 @@ interface Editor {
 
 export default function useCodemirror(): [
   null | Editor,
-  (div: null | HTMLDivElement) => void
+  React.MutableRefObject<HTMLDivElement>
 ] {
-  const [targetEl, setTargetEl] = React.useState<HTMLDivElement | null>(null)
+  // const [targetEl, setTargetEl] = React.useState<HTMLDivElement | null>(null)
+  const targetEl = React.useRef<HTMLDivElement | null>()
   const [editor, setEditor] = React.useState<Editor | null>(null)
 
   const themeCompartment = new Compartment()
@@ -48,16 +51,19 @@ export default function useCodemirror(): [
 
     let view: null | EditorView
 
-    async function createEditor() {
-      const codemirror = await import("../../codemirror")
+    function createEditor() {
+      // const codemirror = await import("../../codemirror")
 
       if (!targetEl || didCancel) {
         return
       }
 
       view = new codemirror.view.EditorView({
-        parent: targetEl,
-      })
+        parent: targetEl.current,
+      });
+
+      // (<any>window).cmview = view;
+      console.log('view: ', view)
 
       setEditor({
         view,
@@ -93,7 +99,7 @@ export default function useCodemirror(): [
     }
   }, [targetEl])
 
-  return [editor, setTargetEl]
+  return [editor, targetEl]
 }
 
 export function getTheme(

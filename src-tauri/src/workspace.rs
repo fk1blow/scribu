@@ -86,15 +86,7 @@ pub fn create_new_temp_file() -> Option<PathBuf> {
         None
       }
     })
-    .and_then(|temp_dir_path| {
-      // let mut xoo = PathBuf::new();
-      // xoo.push("/Users/fk1blow/Library/Application Support/app.scribu.dev/temp");
-
-      let new_file_path = get_new_temp_filename(&temp_dir_path);
-      println!("{:?}", new_file_path);
-
-      Some(new_file_path)
-    })
+    .and_then(|temp_dir_path| Some(get_new_temp_filename(&temp_dir_path)))
 }
 
 fn ensure_temp_dir_created(app_dir: PathBuf) -> PathBuf {
