@@ -16,7 +16,8 @@ const otherTags = {
 export const lightTheme = {
   base: view.EditorView.theme({
     '&': {
-      backgroundColor: '#FFFBF2',
+      backgroundColor: '#f1eadb',
+      color: '#46443e'
     },
   }),
 
@@ -35,7 +36,7 @@ export const lightTheme = {
       class: 'cmt-fence',
       fontFamily: 'Encode Sans',
     },
-    { tag: t.content, fontFamily: 'Encode Sans', fontWeight: '400' },
+    { tag: t.content, fontFamily: 'Encode Sans', fontWeight: '500' },
     {
       tag: t.emphasis,
       fontStyle: 'italic',
