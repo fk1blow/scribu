@@ -6,28 +6,42 @@ import React, { useCallback, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import useCodemirror, { getTheme } from '../hooks/useCodemirror'
 import CustomScroll from 'react-custom-scroll'
+import SimpleBar from 'simplebar-react'
+import 'simplebar/dist/simplebar.min.css'
 
 const EditorWrapper = styled.div`
-  /* display: flex; */
-  /* height: 100%; */
-  /* flex: 1 1; */
+  display: flex;
+  height: 100%;
+  flex: 1 1;
+  justify-content: stretch;
+  width: 100vw;
+  background: rebeccapurple;
 
   .cm-scroller {
     flex: 1 1;
-    /* height: 100%; */
   }
 
   .cm-content {
     max-width: 900px;
     margin: 0 auto;
-  }}
+  }
 
   .cm-editor {
-    /* height: 100%; */
+    height: 100%;
   }
 
   .codemirror-container {
-    /* height: 1000px; */
+    flex-grow: 1;
+  }
+
+  .simplebar-content {
+    display: flex;
+    min-height: 100%;
+    flex: 1 1;
+  }
+
+  .simplebar-content-wrapper {
+    height: 100% !important;
   }
 `
 
@@ -130,18 +144,10 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
   }, [editor])
 
   return (
-    <EditorWrapper>
-      {/* <div style={{ display: 'flex', flex: 1, minHeight: '0px' }}>
-        <div style={{ flex: 1, overflow: 'auto', justifyContent: 'stretch' }}> */}
-          <CustomScroll>
-            <div
-              className="codemirror-container"
-              ref={editorRef}
-              style={{ height: '100%' }}
-            />
-          </CustomScroll>
-        {/* </div>
-      </div> */}
+    <EditorWrapper className="xrx">
+      <SimpleBar style={{ width: '100vw', minHeight: '100%', flex: 1 }}>
+        <div className="codemirror-container" ref={editorRef} />
+      </SimpleBar>
     </EditorWrapper>
   )
 }
