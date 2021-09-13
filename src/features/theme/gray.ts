@@ -13,11 +13,11 @@ const otherTags = {
   fence: Tag.define(t.null), // define custom tag, that can be picked up by the style configuration
 }
 
-export const grayTheme = {
+export const editorTheme = {
   base: view.EditorView.theme({
     '&': {
       backgroundColor: '#a1a1a1',
-      color: '#1A1A1A'
+      color: '#1A1A1A',
     },
   }),
 
@@ -49,4 +49,15 @@ export const grayTheme = {
     { tag: t.literal, fontFamily: 'iA Writer Duospace' },
     { tag: t.monospace, fontFamily: 'iAWriterMonoS-Regular' },
   ]),
+}
+
+export const theme = {
+  editor: {
+    ...editorTheme,
+  },
+
+  app: {
+    backgroundColor: '#a1a1a1',
+    color: '#1A1A1A',
+  },
 }

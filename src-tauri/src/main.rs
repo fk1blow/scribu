@@ -45,11 +45,17 @@ fn main() {
           .emit("tauri://file/new", "")
           .unwrap_or(());
       }
+      "redo" => {
+        event
+          .window()
+          .emit("tauri://edit/redo", "")
+          .unwrap_or(());
+      }
       _ => {}
     })
     .invoke_handler(tauri::generate_handler![workspace::create_new_temp_file])
     .setup(|app| {
-      // TODO try to use `app_dir()` (which uses bundle > identifier)
+      // TODO maybe defer this to the web app so that opening the window gets faster
       workspace::ensure_workspace_ready();
 
       // create the window

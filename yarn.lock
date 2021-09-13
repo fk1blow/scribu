@@ -3480,16 +3480,6 @@ rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-custom-scroll@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/react-custom-scroll/-/react-custom-scroll-4.3.0.tgz#8473ee2c78c5c48fb174941961f65345179a888f"
-  integrity sha512-JHNWBAzyw3MgsCNcG6uXJQkCoVPmWxeEW01ABmUz4HsWxw3EQJ2GzrUa5y4ISI85V3q6O4zwCIZAVn10aM3clQ==
-
-react-custom-scroller@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-custom-scroller/-/react-custom-scroller-1.0.0.tgz#44828226ab7d21a5a316c1a3aaedca608cd56c1d"
-  integrity sha512-BvarENOfD5EMvI10h2uQ5+vfPioPlNYyIT0GYsJQvtpUsRBfDxG3f8ZeW623fdlwQe3WhdktXg/cszBqOdPLJA==
-
 react-dom@^17.0.0:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"

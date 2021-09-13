@@ -5,17 +5,16 @@ import styled from '@emotion/styled'
 import React, { useCallback, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import useCodemirror, { getTheme } from '../hooks/useCodemirror'
-import CustomScroll from 'react-custom-scroll'
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 
 const EditorWrapper = styled.div`
   display: flex;
-  height: 100%;
   flex: 1 1;
   justify-content: stretch;
   width: 100vw;
-  background: rebeccapurple;
+  height: 100%;
+  overflow: hidden;
 
   .cm-scroller {
     flex: 1 1;
@@ -24,6 +23,12 @@ const EditorWrapper = styled.div`
   .cm-content {
     max-width: 900px;
     margin: 0 auto;
+    /*
+      fixes a bug in cm that scroll the content when there is overflow
+      and the user selects some text(or simply clicks on the editor)
+      that resides on the bottom of the editor
+     */
+    padding: 0;
   }
 
   .cm-editor {
@@ -34,6 +39,10 @@ const EditorWrapper = styled.div`
     flex-grow: 1;
   }
 
+  .simplebar-track.simplebar-vertical {
+    width: 14px;
+  }
+
   .simplebar-content {
     display: flex;
     min-height: 100%;
@@ -42,6 +51,11 @@ const EditorWrapper = styled.div`
 
   .simplebar-content-wrapper {
     height: 100% !important;
+  }
+
+  .simplebar-scrollbar::before {
+    border-radius: 2px;
+    background-image: linear-gradient(-131deg, #c3a55f 0%, #9c8348 100%);
   }
 `
 
@@ -60,25 +74,12 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
 
   useEffect(() => {
     if (!editorRef || !editor) return
-
-    console.log('editor: ', editor)
-    console.log('editorRef: ', editorRef)
-    // console.log('targetEl: ', targetEl)
-    foo()
-  }, [editorRef, editor])
-
-  const foo = useCallback(() => {
-    console.log('editor.view: ', editor.view.scrollDOM)
-    // works
-    redo(editor.view)
-    // console.log('editor: ', editor)
-    // console.log('editorRef: ', editorRef)
   }, [editorRef, editor])
 
   useHotkeys(
-    'ctrl+shift+z',
+    'ctrl+shift+Z',
     () => {
-      foo()
+      editor && redo(editor.view)
     },
     [editor],
   )
@@ -87,8 +88,6 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
     if (!editor) {
       return
     }
-
-    console.log('theme: ', theme)
 
     editor.setTheme(getTheme(editor.codemirror, theme))
   }, [editor, theme])
@@ -144,8 +143,8 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
   }, [editor])
 
   return (
-    <EditorWrapper className="xrx">
-      <SimpleBar style={{ width: '100vw', minHeight: '100%', flex: 1 }}>
+    <EditorWrapper>
+      <SimpleBar style={{ minHeight: '100%', flex: 1 }}>
         <div className="codemirror-container" ref={editorRef} />
       </SimpleBar>
     </EditorWrapper>

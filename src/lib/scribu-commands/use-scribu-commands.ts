@@ -1,19 +1,17 @@
-import { dialog, fs, path } from '@tauri-apps/api'
+import { dialog } from '@tauri-apps/api'
 import { listen } from '@tauri-apps/api/event'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
 import {
-  currentFileSelector,
-  workspaceSelector,
-} from '../../features/editor/store/selectors'
-import { createNewFile, replaceCurrentFile } from '../../features/editor/store/workspace-slice'
+  createNewFile,
+  replaceCurrentFile,
+} from '../../features/editor/store/workspace-slice'
 import { useAppDispatch } from '../../store/hooks'
 
 export const useScribuCommands = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    // TODO refactor into adapter
     if (!window['__TAURI__']) return
 
     listen('tauri://window/reload', () => window.location.reload())
@@ -31,9 +29,18 @@ export const useScribuCommands = () => {
 
     listen('tauri://file/new', (_evt) => {
       invoke('create_new_temp_file').then((path: string) => {
-        // console.log('path: ', path)
         dispatch(createNewFile(path))
       })
+    })
+
+    listen('tauri://edit/redo', () => {
+      window.document.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          keyCode: 90,
+          ctrlKey: true,
+          shiftKey: true,
+        }),
+      )
     })
   }, [])
 }

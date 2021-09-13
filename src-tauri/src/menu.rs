@@ -31,7 +31,7 @@ pub fn get_menu() -> Menu {
     .add_item(CustomMenuItem::new("open_file", "Open...").accelerator("CmdOrControl+O"))
     .add_native_item(MenuItem::Separator)
     .add_item(CustomMenuItem::new("save_file", "Save").accelerator("CmdOrControl+S"))
-    .add_item(CustomMenuItem::new("new_file", "Save As").accelerator("CmdOrControl+Shift+s"));
+    .add_item(CustomMenuItem::new("save_as", "Save As").accelerator("CmdOrControl+Shift+s"));
 
   let edit_menu = Menu::new()
     .add_native_item(MenuItem::Cut)
