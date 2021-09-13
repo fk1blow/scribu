@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import {
   createNewFile,
   replaceCurrentFile,
+  saveAsNewFile,
 } from '../../features/editor/store/workspace-slice'
 import { useAppDispatch } from '../../store/hooks'
 
@@ -30,6 +31,13 @@ export const useScribuCommands = () => {
     listen('tauri://file/new', (_evt) => {
       invoke('create_new_temp_file').then((path: string) => {
         dispatch(createNewFile(path))
+      })
+    })
+
+    listen('tauri://file/save-as', (_evt) => {
+      dialog.save().then((path: string) => {
+        // console.log('path: ', path)
+        dispatch(saveAsNewFile({ path }))
       })
     })
 

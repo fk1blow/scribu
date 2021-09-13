@@ -34,22 +34,19 @@ fn main() {
         event.window().minimize().unwrap_or(());
       }
       "open_file" => {
-        event
-          .window()
-          .emit("tauri://file/open", "")
-          .unwrap_or(());
+        event.window().emit("tauri://file/open", "").unwrap_or(());
       }
       "new_file" => {
+        event.window().emit("tauri://file/new", "").unwrap_or(());
+      }
+      "save_as" => {
         event
           .window()
-          .emit("tauri://file/new", "")
+          .emit("tauri://file/save-as", "")
           .unwrap_or(());
       }
       "redo" => {
-        event
-          .window()
-          .emit("tauri://edit/redo", "")
-          .unwrap_or(());
+        event.window().emit("tauri://edit/redo", "").unwrap_or(());
       }
       _ => {}
     })
@@ -69,7 +66,7 @@ fn main() {
                 .title("scrib")
                 .inner_size(1000.0, 1200.0)
                 .position(600.0, 200.0),
-                // .center(),
+              // .center(),
               webview_attributes,
             )
           },

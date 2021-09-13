@@ -1,6 +1,8 @@
 import { fs, path } from '@tauri-apps/api'
 import { ScribuApi, Workspace, WorkspaceStatus } from '../types/ScribuApi'
 
+const newFileContents = '# new file bossule'
+
 const readWorkspace = () =>
   path
     .appDir()
@@ -33,7 +35,10 @@ const replaceCurrentFilePath = (newPath: string) => {
     )
 }
 
-const createNewFileInWorkspace = (newFilePath: string) => {
+const createNewFileInWorkspace = (
+  newFilePath: string,
+  contents = newFileContents,
+) => {
   return readWorkspace()
     .then((workspace) => ({
       ...workspace,
@@ -47,7 +52,7 @@ const createNewFileInWorkspace = (newFilePath: string) => {
           Promise.all([
             fs.writeFile({
               path: newFilePath,
-              contents: '# new file bossule',
+              contents,
             }),
             fs.writeFile({
               path: workspaceJsonPath,
@@ -71,5 +76,8 @@ export const TauriAdapter: ScribuApi = {
   saveCurrentFile: (payload: { path: string; contents: string }) =>
     fs.writeFile(payload),
 
-  createNewFile: (path: string) => createNewFileInWorkspace(path)
+  createNewFile: (path: string) => createNewFileInWorkspace(path),
+
+  saveAsNewfile: (path: string, contents: string) =>
+    createNewFileInWorkspace(path, contents)//.then(readWorkspace),
 }

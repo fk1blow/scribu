@@ -4,6 +4,7 @@ import {
   WorkspaceStatus,
   Workspace,
 } from '../../../lib/scribu-client-api/types/ScribuApi'
+import { RootState } from '../../../store'
 
 const initialState: Workspace = {
   currentFile: {
@@ -41,6 +42,16 @@ export const replaceCurrentFile = createAsyncThunk(
 export const createNewFile = createAsyncThunk(
   'workspace/createNewFile',
   async (payload: string) => useScribuApi().createNewFile(payload),
+)
+
+export const saveAsNewFile = createAsyncThunk<
+  Workspace,
+  { path: string },
+  { state: RootState }
+>('workspace/saveAsNewfile', async ({ path }, { getState }) =>
+  useScribuApi()
+    .getFileInWorkspace(getState().workspace.currentFile.path)
+    .then((contents) => useScribuApi().saveAsNewfile(path, contents)),
 )
 
 export const workspaceSlice = createSlice({
@@ -100,6 +111,17 @@ export const workspaceSlice = createSlice({
     })
 
     builder.addCase(createNewFile.rejected, (state, action) => {
+      state.notifications.push({ type: WorkspaceStatus.DocumentNewError })
+      state.status = WorkspaceStatus.DocumentNewError
+    })
+
+    builder.addCase(saveAsNewFile.fulfilled, (state, action) => {
+      state.currentFile = action.payload.currentFile
+      state.notifications.push({ type: WorkspaceStatus.DocumentLoaded })
+      state.status = WorkspaceStatus.DocumentLoaded
+    })
+
+    builder.addCase(saveAsNewFile.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.DocumentNewError })
       state.status = WorkspaceStatus.DocumentNewError
     })

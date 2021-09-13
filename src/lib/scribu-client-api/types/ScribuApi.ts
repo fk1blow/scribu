@@ -4,6 +4,7 @@ export interface ScribuApi {
   saveCurrentFile: (payload: { path: string; contents: string }) => Promise<void>
   replaceCurrentFile: (payload: string) => Promise<Workspace>
   createNewFile: (path: string) => Promise<Workspace>
+  saveAsNewfile: (path: string, contents: string) => Promise<Workspace>
 }
 
 export interface CurrentFile {
