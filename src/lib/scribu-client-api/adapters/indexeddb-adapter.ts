@@ -3,7 +3,13 @@ import { ScribuApi, Workspace, WorkspaceStatus } from '../types/ScribuApi'
 const tmpMdContents = `
 # itza meee, mark down
 
-sup, broz?!`
+store the handlers using [this lib](https://github.com/jakearchibald/idb-keyval)
+
+attempt to open up the latest file that was edited(opened)
+
+build the *Commander* feature(fuzzy, files, commands, etc)
+
+restore the cursor after getting bluring the commander(hit esc)`
 
 const emptyWorkspace: Workspace = {
   currentFile: { path: 'my-path' },
@@ -11,7 +17,7 @@ const emptyWorkspace: Workspace = {
   notifications: [],
 }
 
-export const HttpAdapter: ScribuApi = {
+export const IndexedDbAdapter: ScribuApi = {
   getWorkspace: () => Promise.resolve(emptyWorkspace),
 
   getFileInWorkspace: (path: string) =>

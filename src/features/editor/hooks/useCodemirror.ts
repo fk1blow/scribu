@@ -249,6 +249,16 @@ async function loadExentions({
       ...codemirror.search.searchKeymap,
       ...codemirror.history.historyKeymap,
       { key: 'Mod-Shift-z', run: redo, preventDefault: true },
+      { key: 'Mod-Shift-p', run: (evt) => {
+        document.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            keyCode: 80,
+            ctrlKey: true,
+            shiftKey: true,
+          }),
+        )
+        return true
+      }, preventDefault: false },
       ...codemirror.fold.foldKeymap,
       ...codemirror.comment.commentKeymap,
       ...codemirror.autocomplete.completionKeymap,

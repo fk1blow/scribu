@@ -55,7 +55,6 @@ export const editorTheme = {
   ]),
 }
 
-
 export const theme: ThemeDefinition = {
   editor: {
     ...editorTheme,
@@ -65,4 +64,13 @@ export const theme: ThemeDefinition = {
     backgroundColor: '#f1eadb',
     foregroundColor: '#46443e',
   },
+
+  commander: {
+    backgroundColor: '#dfdacd',
+    foregroundColor: '#46443e',
+    borderColor: '#46443e',
+    highlightColor: '#d0cbbe'
+  },
+
+  button: {},
 }

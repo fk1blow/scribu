@@ -69,15 +69,13 @@ const createNewFileInWorkspace = (
 export const TauriAdapter: ScribuApi = {
   getWorkspace: () => readWorkspace(),
 
-  replaceCurrentFile: (path: string) => replaceCurrentFilePath(path),
+  replaceCurrentFile: (path) => replaceCurrentFilePath(path),
 
-  getFileInWorkspace: (path: string) => fs.readTextFile(path),
+  getFileInWorkspace: (path) => fs.readTextFile(path),
 
-  saveCurrentFile: (payload: { path: string; contents: string }) =>
-    fs.writeFile(payload),
+  saveCurrentFile: (payload) => fs.writeFile(payload),
 
-  createNewFile: (path: string) => createNewFileInWorkspace(path),
+  createNewFile: (path) => createNewFileInWorkspace(path),
 
-  saveAsNewfile: (path: string, contents: string) =>
-    createNewFileInWorkspace(path, contents)//.then(readWorkspace),
+  saveAsNewfile: (path, contents) => createNewFileInWorkspace(path, contents),
 }

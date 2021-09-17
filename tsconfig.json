@@ -15,7 +15,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "compilerOptions": {
+      "types": ["vite-remark-html/client"]
+    }
   },
   "include": ["./src"]
 }

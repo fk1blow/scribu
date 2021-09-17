@@ -1,24 +1,25 @@
 import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
-import { useAppDispatch, useAppSelector } from './store/hooks'
+import { ThemeProvider } from '@emotion/react'
+
+import { useAppDispatch } from './store/hooks'
 import { fetchWorkspace } from './features/editor/store/workspace-slice'
 import StatusBar from './features/statusbar/StatusBar'
 import HeaderBar from './features/headerbar/HeaderBar'
 import EditorManager from './features/editor/components/EditorManager'
-import { useScribuCommands } from './lib/scribu-commands/use-scribu-commands'
-import { ThemeProvider } from '@emotion/react'
 import { theme } from './features/theme/light'
+import Commander from './features/commander/components/Commander'
 
 const StyledApp = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: ${props => props.theme.backgroundColor};
-  color: ${props => props.theme.foregroundColor};
+  position: relative;
+  background-color: ${(props) => props.theme.app.backgroundColor};
+  color: ${(props) => props.theme.app.foregroundColor};
 `
 
 function App() {
-  useScribuCommands()
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -26,8 +27,9 @@ function App() {
   }, [])
 
   return (
-    <ThemeProvider theme={theme.app}>
+    <ThemeProvider theme={theme}>
       <StyledApp>
+        <Commander />
         <HeaderBar />
         <EditorManager />
         <StatusBar />

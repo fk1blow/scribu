@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import mkcert from 'vite-plugin-mkcert'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh()]
+  plugins: [reactRefresh(), mkcert()],
+  server: {
+    https: true,
+  },
 })
