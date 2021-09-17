@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { useAppDispatch, useAppSelector } from './store/hooks'
 import { fetchWorkspace } from './features/editor/store/workspace-slice'
@@ -13,8 +13,6 @@ const StyledApp = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: ${props => props.theme.backgroundColor};
-  color: ${props => props.theme.foregroundColor};
 `
 
 function App() {
@@ -25,6 +23,8 @@ function App() {
     dispatch(fetchWorkspace())
   }, [])
 
+  const [ counter, setCounter ] = useState(0)
+
   return (
     <ThemeProvider theme={theme.app}>
       <StyledApp>
@@ -33,6 +33,10 @@ function App() {
         <StatusBar />
       </StyledApp>
     </ThemeProvider>
+    // <div>works so so?
+    //   counter: {counter}<br />
+    //   <button onClick={() => setCounter(counter + 1)}>inc</button>
+    // </div>
   )
 }
 

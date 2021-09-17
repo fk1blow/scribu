@@ -6,7 +6,7 @@ const emptyWorkspace: Workspace = {
   notifications: [],
 }
 
-export const HttpAdapter: ScribuApi = {
+export const HttpAdapter: any = {
   getWorkspace: () => Promise.resolve(emptyWorkspace),
 
   getFileInWorkspace: (path: string) =>

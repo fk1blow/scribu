@@ -50,7 +50,6 @@ const EditorManager = ({}) => {
       <Editor
         key={editorKeyRef}
         document={documentContent}
-        workspace={workspace}
         onUpdate={onUpdateDocument}
       />
     </StyledEditorManager>

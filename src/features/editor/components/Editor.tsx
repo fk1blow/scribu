@@ -60,12 +60,11 @@ const EditorWrapper = styled.div`
 `
 
 interface Props {
-  workspace: any
   document: string
   onUpdate: (doc: string) => void
 }
 
-const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
+const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
   const [editor, editorRef] = useCodemirror()
   const [theme, setTheme] = React.useState<'light' | 'dark' | 'gray'>('light')
   const themeRef = React.useRef(theme)
@@ -144,9 +143,9 @@ const Editor: React.FC<Props> = ({ onUpdate, document, workspace }: Props) => {
 
   return (
     <EditorWrapper>
-      <SimpleBar style={{ minHeight: '100%', flex: 1 }}>
+      {/* <SimpleBar style={{ minHeight: '100%', flex: 1 }}> */}
         <div className="codemirror-container" ref={editorRef} />
-      </SimpleBar>
+      {/* </SimpleBar> */}
     </EditorWrapper>
   )
 }
