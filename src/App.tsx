@@ -8,11 +8,15 @@ import EditorManager from './features/editor/components/EditorManager'
 import { useScribuCommands } from './lib/scribu-commands/use-scribu-commands'
 import { ThemeProvider } from '@emotion/react'
 import { theme } from './features/theme/light'
+import Commander from './features/commander/components/Commander'
 
 const StyledApp = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  position: relative;
+  background-color: ${(props) => props.theme.app.backgroundColor};
+  color: ${(props) => props.theme.app.foregroundColor}; ;
 `
 
 function App() {
@@ -23,11 +27,10 @@ function App() {
     dispatch(fetchWorkspace())
   }, [])
 
-  const [ counter, setCounter ] = useState(0)
-
   return (
-    <ThemeProvider theme={theme.app}>
+    <ThemeProvider theme={theme}>
       <StyledApp>
+        <Commander />
         <HeaderBar />
         <EditorManager />
         <StatusBar />

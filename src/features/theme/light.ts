@@ -25,7 +25,8 @@ export const editorTheme = {
     '&': {
       // backgroundColor: '#f1eadb',
       // backgroundColor: 'transparent',
-      // color: '#46443e'
+      // color: '#3e3e3e'
+      fontFamily: regularFont
     },
   }),
 
@@ -33,7 +34,7 @@ export const editorTheme = {
     {
       tag: t.heading,
       fontFamily: boldFont,
-      color: '#0f0f0f',
+      color: '#424242',
     },
     {
       tag: otherTags.fence,
@@ -43,7 +44,7 @@ export const editorTheme = {
     { tag: t.content, fontFamily: regularFont, fontWeight: '500' },
     {
       tag: t.emphasis,
-      fontFamily: boldItalicFont,
+      fontFamily: italicFont,
     },
     {
       tag: t.strong,
@@ -55,7 +56,6 @@ export const editorTheme = {
   ]),
 }
 
-
 export const theme: ThemeDefinition = {
   editor: {
     ...editorTheme,
@@ -65,4 +65,13 @@ export const theme: ThemeDefinition = {
     backgroundColor: '#f1eadb',
     foregroundColor: '#46443e',
   },
+
+  commander: {
+    backgroundColor: '#dfdacd',
+    foregroundColor: '#46443e',
+    borderColor: '#46443e',
+    highlightColor: '#d0cbbe'
+  },
+
+  button: {},
 }
