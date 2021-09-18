@@ -11,3 +11,18 @@ html {
   overflow: hidden;
   height: 100%;
 }
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  // background: rgb(168, 164, 157);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(224, 214, 180);
+  border-radius: 20px;
+  // border: 1px solid orange;
+}

@@ -33,10 +33,6 @@ function App() {
         <StatusBar />
       </StyledApp>
     </ThemeProvider>
-    // <div>works so so?
-    //   counter: {counter}<br />
-    //   <button onClick={() => setCounter(counter + 1)}>inc</button>
-    // </div>
   )
 }
 

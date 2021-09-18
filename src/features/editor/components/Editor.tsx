@@ -5,8 +5,6 @@ import styled from '@emotion/styled'
 import React, { useCallback, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import useCodemirror, { getTheme } from '../hooks/useCodemirror'
-import SimpleBar from 'simplebar-react'
-import 'simplebar/dist/simplebar.min.css'
 
 const EditorWrapper = styled.div`
   display: flex;
@@ -143,9 +141,7 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
 
   return (
     <EditorWrapper>
-      {/* <SimpleBar style={{ minHeight: '100%', flex: 1 }}> */}
-        <div className="codemirror-container" ref={editorRef} />
-      {/* </SimpleBar> */}
+      <div className="codemirror-container" ref={editorRef} />
     </EditorWrapper>
   )
 }
