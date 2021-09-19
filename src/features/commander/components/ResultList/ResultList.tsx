@@ -4,8 +4,6 @@ import Fuse from 'fuse.js'
 import { RunnableCommand } from '../../types/RunnableCommand'
 import ResultListButton from './ResultListButton'
 import { useHotkeys } from 'react-hotkeys-hook'
-import SimpleBar from 'simplebar-react'
-import 'simplebar/dist/simplebar.min.css'
 import { useAppDispatch } from '../../../../store/hooks'
 import {
   commandsMap,
@@ -61,19 +59,17 @@ const ResultList: React.FC<Props> = ({ results, onChoose }: Props) => {
 
   return (
     <StyledDiv>
-      <SimpleBar style={{ maxHeight: '120px', flex: 1 }}>
-        {results.map((resultItem, idx) => (
-          <ResultListButton
-            key={resultItem.refIndex}
-            selected={selectedRowIdx === idx}
-            onClick={onChoose}
-          >
-            {resultItem.item.title}
+      {results.map((resultItem, idx) => (
+        <ResultListButton
+          key={resultItem.refIndex}
+          selected={selectedRowIdx === idx}
+          onClick={onChoose}
+        >
+          {resultItem.item.title}
 
-            <span>{resultItem.item.shortcut && resultItem.item.shortcut}</span>
-          </ResultListButton>
-        ))}
-      </SimpleBar>
+          <span>{resultItem.item.shortcut && resultItem.item.shortcut}</span>
+        </ResultListButton>
+      ))}
     </StyledDiv>
   )
 }

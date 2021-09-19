@@ -25,7 +25,7 @@ export const editorTheme = {
     '&': {
       // backgroundColor: '#f1eadb',
       // backgroundColor: 'transparent',
-      // color: '#3e3e3e'
+      color: '#1a1a1a',
       fontFamily: regularFont
     },
   }),

@@ -1,4 +1,4 @@
-import { dialog } from '@tauri-apps/api'
+import { dialog, path } from '@tauri-apps/api'
 import { listen } from '@tauri-apps/api/event'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
@@ -29,9 +29,17 @@ export const useScribuCommands = () => {
     })
 
     listen('tauri://file/new', (_evt) => {
-      invoke('create_new_temp_file').then((path: string) => {
-        dispatch(createNewFile(path))
-      })
+      console.log('tauri://file/new')
+
+      path
+        .documentDir()
+        .then((docsPath) => path.join(docsPath, 'scribu'))
+        .then((inPath) => {
+          invoke('create_new_file', { inPath }).then((path: string) => {
+            dispatch(createNewFile(path))
+          })
+        })
+        .catch(console.error)
     })
 
     listen('tauri://file/save-as', (_evt) => {

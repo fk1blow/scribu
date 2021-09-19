@@ -37,11 +37,11 @@ pub fn ensure_workspace_ready() -> Result<PathBuf, i32> {
     .map(|p| ensure_temp_dir_created(p))
 }
 
-pub fn get_new_temp_filename(temp_path: &PathBuf) -> PathBuf {
+fn try_filename_in_path(target_path: &PathBuf) -> PathBuf {
   let dt = Local::now();
   let file_name_prefix = dt.format("%Y-%m-%d").to_string();
   let new_file_name = file_name_prefix.to_string() + ".md";
-  let new_file_path = temp_path.join(new_file_name);
+  let new_file_path = target_path.join(new_file_name);
 
   if new_file_path.exists() {
     println!("exists {:?}", new_file_path);
@@ -56,7 +56,7 @@ pub fn get_new_temp_filename(temp_path: &PathBuf) -> PathBuf {
         file_name_prefix.to_string(),
         counter.to_string()
       );
-      let try_new_file_path = temp_path.join(&try_new_file_name);
+      let try_new_file_path = target_path.join(&try_new_file_name);
 
       if try_new_file_path.exists() == false {
         retrying = true;
@@ -72,21 +72,10 @@ pub fn get_new_temp_filename(temp_path: &PathBuf) -> PathBuf {
   }
 }
 
+// TODO move this to a commands.rs file
 #[tauri::command]
-pub fn create_new_temp_file() -> Option<PathBuf> {
-  let user_config_dir = config_dir();
-
-  user_config_dir
-    .and_then(|config_dir_path| {
-      let temp_dir = config_dir_path.join("app.scribu.dev").join("temp");
-
-      if temp_dir.exists() {
-        Some(temp_dir)
-      } else {
-        None
-      }
-    })
-    .and_then(|temp_dir_path| Some(get_new_temp_filename(&temp_dir_path)))
+pub fn create_new_file(in_path: String) -> Option<PathBuf> {
+  Some(try_filename_in_path(&PathBuf::from(in_path)))
 }
 
 fn ensure_temp_dir_created(app_dir: PathBuf) -> PathBuf {

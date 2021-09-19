@@ -50,7 +50,7 @@ fn main() {
       }
       _ => {}
     })
-    .invoke_handler(tauri::generate_handler![workspace::create_new_temp_file])
+    .invoke_handler(tauri::generate_handler![workspace::create_new_file])
     .setup(|app| {
       // TODO maybe defer this to the web app so that opening the window gets faster
       workspace::ensure_workspace_ready();
