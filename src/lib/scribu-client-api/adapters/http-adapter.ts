@@ -1,4 +1,5 @@
-import { ScribuApi, Workspace, WorkspaceStatus } from '../types/ScribuApi'
+import { Workspace } from "../types/Workspace"
+import { WorkspaceStatus } from "../types/WorkspaceStatus"
 
 const emptyWorkspace: Workspace = {
   currentFile: { path: '' },

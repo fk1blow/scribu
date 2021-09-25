@@ -5,7 +5,7 @@ import { fetchWorkspace } from './features/editor/store/workspace-slice'
 import StatusBar from './features/statusbar/StatusBar'
 import HeaderBar from './features/headerbar/HeaderBar'
 import EditorManager from './features/editor/components/EditorManager'
-import { useScribuCommands } from './lib/scribu-commands/use-scribu-commands'
+import { useTauriCommands } from './lib/scribu-commands/use-tauri-commands'
 import { ThemeProvider } from '@emotion/react'
 import { theme } from './features/theme/light'
 import Commander from './features/commander/components/Commander'
@@ -20,7 +20,8 @@ const StyledApp = styled.div`
 `
 
 function App() {
-  useScribuCommands()
+  useTauriCommands()
+
   const dispatch = useAppDispatch()
 
   useEffect(() => {

@@ -1,5 +1,6 @@
-import { fs, path } from '@tauri-apps/api'
-import { ScribuApi, Workspace, WorkspaceStatus } from '../types/ScribuApi'
+import { fs, invoke, path } from '@tauri-apps/api'
+import { ScribuApi } from '../types/ScribuApi'
+import { Workspace } from '../types/Workspace'
 
 const newFileContents = '# new file bossule'
 
@@ -13,7 +14,7 @@ const readWorkspace = () =>
         .then((r) => JSON.parse(r) as Workspace)
     })
 
-const replaceCurrentFilePath = (newPath: string) => {
+const replaceCurrentFile = (newPath: string) => {
   return readWorkspace()
     .then((workspace) => ({
       ...workspace,
@@ -35,14 +36,11 @@ const replaceCurrentFilePath = (newPath: string) => {
     )
 }
 
-const createNewFileInWorkspace = (
-  newFilePath: string,
-  contents = newFileContents,
-) => {
+const createNewFile = (atPath: string, contents = newFileContents) => {
   return readWorkspace()
     .then((workspace) => ({
       ...workspace,
-      currentFile: { path: newFilePath },
+      currentFile: { path: atPath },
     }))
     .then((workspace) =>
       path
@@ -51,14 +49,14 @@ const createNewFileInWorkspace = (
         .then((workspaceJsonPath) =>
           Promise.all([
             fs.writeFile({
-              path: newFilePath,
+              path: atPath,
               contents,
             }),
             fs.writeFile({
               path: workspaceJsonPath,
               contents: JSON.stringify({
                 ...workspace,
-                currentFile: { path: newFilePath },
+                currentFile: { path: atPath },
               }),
             }),
           ]).then((_) => workspace),
@@ -69,15 +67,23 @@ const createNewFileInWorkspace = (
 export const TauriAdapter: ScribuApi = {
   getWorkspace: () => readWorkspace(),
 
-  replaceCurrentFile: (path: string) => replaceCurrentFilePath(path),
-
   getFileInWorkspace: (path: string) => fs.readTextFile(path),
 
   saveCurrentFile: (payload: { path: string; contents: string }) =>
     fs.writeFile(payload),
 
-  createNewFile: (path: string) => createNewFileInWorkspace(path),
+  replaceCurrentFile: (path: string) => replaceCurrentFile(path),
+
+  createNewFile: () =>
+    path
+      .documentDir()
+      .then((docsPath) => path.join(docsPath, 'scribu'))
+      .then((inDir) =>
+        invoke('filepath_available', { inDir }).then((availPath: string) =>
+          createNewFile(availPath),
+        ),
+      ),
 
   saveAsNewfile: (path: string, contents: string) =>
-    createNewFileInWorkspace(path, contents)//.then(readWorkspace),
+    createNewFile(path, contents),
 }

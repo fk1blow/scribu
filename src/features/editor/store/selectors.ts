@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { WorkspaceStatus } from '../../../lib/scribu-client-api/types/ScribuApi'
+import { WorkspaceStatus } from '../../../lib/scribu-client-api/types/WorkspaceStatus'
 import { RootState } from '../../../store'
 
 export const lastNotification = createSelector(

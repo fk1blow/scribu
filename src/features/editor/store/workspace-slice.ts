@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { useScribuApi } from '../../../lib/scribu-client-api'
-import {
-  WorkspaceStatus,
-  Workspace,
-} from '../../../lib/scribu-client-api/types/ScribuApi'
+import { Workspace } from '../../../lib/scribu-client-api/types/Workspace'
+import { WorkspaceStatus } from '../../../lib/scribu-client-api/types/WorkspaceStatus'
 import { RootState } from '../../../store'
 
 const initialState: Workspace = {
@@ -41,7 +39,7 @@ export const replaceCurrentFile = createAsyncThunk(
 
 export const createNewFile = createAsyncThunk(
   'workspace/createNewFile',
-  async (payload: string) => useScribuApi().createNewFile(payload),
+  async () => useScribuApi().createNewFile(),
 )
 
 export const saveAsNewFile = createAsyncThunk<

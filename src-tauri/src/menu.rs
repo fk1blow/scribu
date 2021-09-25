@@ -36,7 +36,7 @@ pub fn get_menu() -> Menu {
   let edit_menu = Menu::new()
     .add_native_item(MenuItem::Cut)
     .add_native_item(MenuItem::Copy)
-    .add_native_item(MenuItem::Redo)
+    // .add_native_item(MenuItem::Redo)
     .add_native_item(MenuItem::Undo)
     .add_item(CustomMenuItem::new("redo", "Redo").accelerator("CmdOrControl+Shift+z"))
     .add_native_item(MenuItem::Paste);

@@ -8,6 +8,7 @@ extern crate notify;
 use tauri::WindowBuilder;
 mod menu;
 mod workspace;
+mod commands;
 
 fn main() {
   tauri::Builder::default()
@@ -50,7 +51,7 @@ fn main() {
       }
       _ => {}
     })
-    .invoke_handler(tauri::generate_handler![workspace::create_new_file])
+    .invoke_handler(tauri::generate_handler![commands::filepath_available])
     .setup(|app| {
       // TODO maybe defer this to the web app so that opening the window gets faster
       workspace::ensure_workspace_ready();

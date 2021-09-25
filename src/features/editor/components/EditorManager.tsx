@@ -9,7 +9,7 @@ import {
   documentContentSelector,
 } from '../store/selectors'
 import { fetchCurrentFile, saveCurrentFile } from '../store/workspace-slice'
-// importing `window` will screw with vite's brain
+// importing plan `window`, witout aliasing, will screw with vite's brain
 import { window as tauriWindow } from '@tauri-apps/api'
 
 const StyledEditorManager = styled.div`
@@ -26,9 +26,9 @@ const EditorManager = ({}) => {
   const workspaceCurrentFile = useAppSelector(currentFileSelector)
   const documentContent = useAppSelector(documentContentSelector)
 
-  const [workspace, setWorkspace] = useState<any>(null)
   const [editorKeyRef, setEditorKeyRef] = useState('pristine')
 
+  // move the dispatch directly inside the `Editor` component
   const onUpdateDocument = useCallback(
     debounce((contents) => {
       if (!workspaceCurrentFile.path.length) return
@@ -50,6 +50,7 @@ const EditorManager = ({}) => {
       <Editor
         key={editorKeyRef}
         document={documentContent}
+        // move the dispatch directly inside the `Editor` component
         onUpdate={onUpdateDocument}
       />
     </StyledEditorManager>

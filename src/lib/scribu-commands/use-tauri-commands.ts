@@ -9,7 +9,7 @@ import {
 } from '../../features/editor/store/workspace-slice'
 import { useAppDispatch } from '../../store/hooks'
 
-export const useScribuCommands = () => {
+export const useTauriCommands = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -28,18 +28,9 @@ export const useScribuCommands = () => {
         .then((path: string) => dispatch(replaceCurrentFile(path)))
     })
 
+    // TODO refactor by trying to keep only the call to `dispatch`
     listen('tauri://file/new', (_evt) => {
-      console.log('tauri://file/new')
-
-      path
-        .documentDir()
-        .then((docsPath) => path.join(docsPath, 'scribu'))
-        .then((inPath) => {
-          invoke('create_new_file', { inPath }).then((path: string) => {
-            dispatch(createNewFile(path))
-          })
-        })
-        .catch(console.error)
+      dispatch(createNewFile())
     })
 
     listen('tauri://file/save-as', (_evt) => {
@@ -50,6 +41,7 @@ export const useScribuCommands = () => {
     })
 
     listen('tauri://edit/redo', () => {
+      // console.log('tauri redo')
       window.document.dispatchEvent(
         new KeyboardEvent('keydown', {
           keyCode: 90,

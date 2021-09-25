@@ -1,7 +1,6 @@
 import * as view from '@codemirror/view';
 import * as state from '@codemirror/state';
 import * as history from '@codemirror/history';
-import * as fold from '@codemirror/fold';
 import * as language from '@codemirror/language';
 import * as languageData from '@codemirror/language-data';
 import * as gutter from '@codemirror/gutter';
@@ -20,7 +19,6 @@ export {
   view,
   state,
   history,
-  fold,
   language,
   languageData,
   gutter,

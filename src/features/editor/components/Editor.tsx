@@ -1,5 +1,5 @@
 import { redo } from '@codemirror/history'
-import { EditorState } from '@codemirror/state'
+import { EditorState, Transaction } from '@codemirror/state'
 import { ViewUpdate } from '@codemirror/view'
 import styled from '@emotion/styled'
 import React, { useCallback, useEffect } from 'react'
@@ -76,7 +76,10 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
   useHotkeys(
     'ctrl+shift+Z',
     () => {
-      editor && redo(editor.view)
+      if (editor) {
+        let x = redo(editor.view)
+        console.log('x: ', x)
+      }
     },
     [editor],
   )
@@ -116,10 +119,18 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
 
       const { codemirror } = editor
 
+      codemirror.history
+
       // Keep our state in sync with the editor's state. This listener is called
       // after view.setState and on any future updates
       const updateListener = codemirror.view.EditorView.updateListener.of(
         (update: ViewUpdate) => {
+          // view the types of transactions and pick the undo/redo events
+          // console.log('update.transactions.length: ', update.transactions.length)
+          // const t: Transaction = update.transactions[0]
+          // console.log('is undo: ', t?.isUserEvent('undo') || false)
+          // console.log('is redo: ', t?.isUserEvent('redo') || false)
+
           if (update.docChanged) {
             onUpdate(update.state.doc.toString())
           }

@@ -13,7 +13,7 @@ import { GutterMarker } from '@codemirror/gutter'
 import headingsGutter from '../plugins/heading-gutters'
 
 import * as codemirror from '../../codemirror'
-import { redo } from '@codemirror/history'
+import { redo, undo } from '@codemirror/history'
 
 type Bundle = typeof import('../../codemirror')
 
@@ -247,9 +247,10 @@ async function loadExentions({
       ...codemirror.commands.defaultKeymap,
       ...codemirror.closebrackets.closeBracketsKeymap,
       ...codemirror.search.searchKeymap,
-      ...codemirror.history.historyKeymap,
+      // ...codemirror.history.historyKeymap,
       { key: 'Mod-Shift-z', run: redo, preventDefault: true },
-      ...codemirror.fold.foldKeymap,
+      { key: 'Mod-z', run: undo, preventDefault: true },
+      // ...codemirror.fold.foldKeymap,
       ...codemirror.comment.commentKeymap,
       ...codemirror.autocomplete.completionKeymap,
       ...codemirror.lint.lintKeymap,
