@@ -14,54 +14,45 @@ const readWorkspace = () =>
         .then((r) => JSON.parse(r) as Workspace)
     })
 
-const replaceCurrentFile = (newPath: string) => {
-  return readWorkspace()
-    .then((workspace) => ({
-      ...workspace,
-      currentFile: { path: newPath },
-    }))
-    .then((newWorkspace) =>
-      path
-        .configDir()
-        .then((configDirPath) =>
-          path.join(configDirPath, 'app.scribu.dev', 'workspace.json'),
-        )
-        .then((workspaceJsonPath) =>
-          fs.writeFile({
-            path: workspaceJsonPath,
-            contents: JSON.stringify(newWorkspace),
-          }),
-        )
-        .then(() => newWorkspace),
-    )
+const replaceCurrentFile = async (newPath: string) => {
+  const oldWorkspace = await readWorkspace()
+  const newWorkspace = {
+    ...oldWorkspace,
+    currentFile: { path: newPath },
+  }
+
+  const appDirPath = await path.appDir()
+  const workspaceJsonPath = await path.join(appDirPath, 'workspace.json')
+
+  await fs.writeFile({
+    path: workspaceJsonPath,
+    contents: JSON.stringify(newWorkspace),
+  })
+  return newWorkspace
 }
 
-const createNewFile = (atPath: string, contents = newFileContents) => {
-  return readWorkspace()
-    .then((workspace) => ({
-      ...workspace,
-      currentFile: { path: atPath },
-    }))
-    .then((workspace) =>
-      path
-        .appDir()
-        .then((appDirPath) => path.join(appDirPath, 'workspace.json'))
-        .then((workspaceJsonPath) =>
-          Promise.all([
-            fs.writeFile({
-              path: atPath,
-              contents,
-            }),
-            fs.writeFile({
-              path: workspaceJsonPath,
-              contents: JSON.stringify({
-                ...workspace,
-                currentFile: { path: atPath },
-              }),
-            }),
-          ]).then((_) => workspace),
-        ),
-    )
+const createNewFile = async (atPath: string, contents = newFileContents) => {
+  const oldWorkspace = await readWorkspace()
+  const newWorkspace = {
+    ...oldWorkspace,
+    currentFile: { path: atPath },
+  }
+
+  const appDirPath = await path.appDir()
+  const workspaceJsonPath = await path.join(appDirPath, 'workspace.json')
+
+  const _ = await Promise.all([
+    fs.writeFile({
+      path: atPath,
+      contents,
+    }),
+    fs.writeFile({
+      path: workspaceJsonPath,
+      contents: JSON.stringify(newWorkspace),
+    }),
+  ])
+
+  return newWorkspace
 }
 
 export const TauriAdapter: ScribuApi = {
@@ -69,12 +60,15 @@ export const TauriAdapter: ScribuApi = {
 
   getFileInWorkspace: (path: string) => fs.readTextFile(path),
 
-  saveCurrentFile: (payload: { path: string; contents: string }) =>
+  // saveCurrentFile: (payload: { path: string; contents: string }) =>
+  //   fs.writeFile(payload),
+
+  persistDocument: (payload: { path: string; contents: string }) =>
     fs.writeFile(payload),
 
-  replaceCurrentFile: (path: string) => replaceCurrentFile(path),
+  openDocument: (path: string) => replaceCurrentFile(path),
 
-  createNewFile: () =>
+  createNewDocument: () =>
     path
       .documentDir()
       .then((docsPath) => path.join(docsPath, 'scribu'))
@@ -84,6 +78,8 @@ export const TauriAdapter: ScribuApi = {
         ),
       ),
 
-  saveAsNewfile: (path: string, contents: string) =>
+  // saveAsFile: (path: string, contents: string) =>
+  //   createNewFile(path, contents),
+  saveAsNewDocument: (path: string, contents: string) =>
     createNewFile(path, contents),
 }

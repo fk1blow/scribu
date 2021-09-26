@@ -1,10 +1,9 @@
-import { dialog, path } from '@tauri-apps/api'
+import { dialog } from '@tauri-apps/api'
 import { listen } from '@tauri-apps/api/event'
-import { invoke } from '@tauri-apps/api/tauri'
 import { useEffect } from 'react'
 import {
-  createNewFile,
-  replaceCurrentFile,
+  createNewDocument,
+  openDocument,
   saveAsNewFile,
 } from '../../features/editor/store/workspace-slice'
 import { useAppDispatch } from '../../store/hooks'
@@ -19,24 +18,25 @@ export const useTauriCommands = () => {
 
     // TODO expand to multiple tabs, when this feat becomes available
     listen('tauri://file-drop', (evt: { event: string; payload: string[] }) => {
-      if (evt.payload.length === 1) dispatch(replaceCurrentFile(evt.payload[0]))
+      if (evt.payload.length === 1) dispatch(openDocument(evt.payload[0]))
     })
 
     listen('tauri://file/open', () => {
-      dialog
-        .open({ multiple: false })
-        .then((path: string) => dispatch(replaceCurrentFile(path)))
+      dialog.open({ multiple: false }).then((filePath: string) => {
+        // filePath may be null if the user cancels the operation
+        if (filePath) dispatch(openDocument(filePath))
+      })
     })
 
     // TODO refactor by trying to keep only the call to `dispatch`
     listen('tauri://file/new', (_evt) => {
-      dispatch(createNewFile())
+      dispatch(createNewDocument())
     })
 
     listen('tauri://file/save-as', (_evt) => {
-      dialog.save().then((path: string) => {
-        // console.log('path: ', path)
-        dispatch(saveAsNewFile({ path }))
+      dialog.save().then((filePath: string) => {
+        // filePath may be null if the user cancels the operation
+        if (filePath) dispatch(saveAsNewFile({ path: filePath }))
       })
     })
 

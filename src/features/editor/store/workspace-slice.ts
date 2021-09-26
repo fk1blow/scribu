@@ -9,6 +9,7 @@ const initialState: Workspace = {
     path: '',
   },
   status: WorkspaceStatus.WorkspacePristine,
+  document: '',
   notifications: [{ type: WorkspaceStatus.WorkspacePristine }],
 }
 
@@ -19,27 +20,27 @@ export const fetchWorkspace = createAsyncThunk(
   },
 )
 
-export const fetchCurrentFile = createAsyncThunk(
-  'workspace/fetchCurrentFile',
+export const fetchDocument = createAsyncThunk(
+  'workspace/getDocumentContents',
   async (path: string) => {
     return useScribuApi().getFileInWorkspace(path)
   },
 )
 
-export const saveCurrentFile = createAsyncThunk(
-  'workspace/saveCurrentFile',
+export const persistDocument = createAsyncThunk(
+  'workspace/persistDocumentContents',
   async (payload: { path: string; contents: string }) =>
-    useScribuApi().saveCurrentFile(payload),
+    useScribuApi().persistDocument(payload),
 )
 
-export const replaceCurrentFile = createAsyncThunk(
-  'workspace/replaceCurrentFile',
-  async (payload: string) => useScribuApi().replaceCurrentFile(payload),
+export const openDocument = createAsyncThunk(
+  'workspace/openDocument',
+  async (payload: string) => useScribuApi().openDocument(payload),
 )
 
-export const createNewFile = createAsyncThunk(
-  'workspace/createNewFile',
-  async () => useScribuApi().createNewFile(),
+export const createNewDocument = createAsyncThunk(
+  'workspace/createNewDocument',
+  async () => useScribuApi().createNewDocument(),
 )
 
 export const saveAsNewFile = createAsyncThunk<
@@ -49,7 +50,7 @@ export const saveAsNewFile = createAsyncThunk<
 >('workspace/saveAsNewfile', async ({ path }, { getState }) =>
   useScribuApi()
     .getFileInWorkspace(getState().workspace.currentFile.path)
-    .then((contents) => useScribuApi().saveAsNewfile(path, contents)),
+    .then((contents) => useScribuApi().saveAsNewDocument(path, contents)),
 )
 
 export const workspaceSlice = createSlice({
@@ -75,40 +76,40 @@ export const workspaceSlice = createSlice({
       state.status = WorkspaceStatus.WorkspaceLoadError
     })
 
-    builder.addCase(replaceCurrentFile.fulfilled, (state, action) => {
+    builder.addCase(openDocument.fulfilled, (state, action) => {
       state.currentFile = action.payload.currentFile
       state.notifications.push({ type: WorkspaceStatus.WorkspacePrepared })
       state.status = WorkspaceStatus.WorkspacePrepared
     })
 
-    builder.addCase(replaceCurrentFile.rejected, (state, action) => {
+    builder.addCase(openDocument.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.WorkspaceLoadError })
       state.status = WorkspaceStatus.WorkspaceLoadError
     })
 
-    builder.addCase(fetchCurrentFile.fulfilled, (state, action) => {
+    builder.addCase(fetchDocument.fulfilled, (state, action) => {
       state.document = action.payload
       state.notifications.push({ type: WorkspaceStatus.DocumentLoaded })
       state.status = WorkspaceStatus.DocumentLoaded
     })
 
-    builder.addCase(fetchCurrentFile.rejected, (state, action) => {
+    builder.addCase(fetchDocument.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.DocumentLoadError })
       state.status = WorkspaceStatus.DocumentLoadError
     })
 
-    builder.addCase(saveCurrentFile.rejected, (state, action) => {
+    builder.addCase(persistDocument.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.DocumentSaveError })
       state.status = WorkspaceStatus.DocumentSaveError
     })
 
-    builder.addCase(createNewFile.fulfilled, (state, action) => {
+    builder.addCase(createNewDocument.fulfilled, (state, action) => {
       state.currentFile = action.payload.currentFile
       state.notifications.push({ type: WorkspaceStatus.DocumentLoaded })
       state.status = WorkspaceStatus.DocumentLoaded
     })
 
-    builder.addCase(createNewFile.rejected, (state, action) => {
+    builder.addCase(createNewDocument.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.DocumentNewError })
       state.status = WorkspaceStatus.DocumentNewError
     })
