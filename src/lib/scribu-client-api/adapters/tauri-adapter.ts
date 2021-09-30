@@ -60,9 +60,6 @@ export const TauriAdapter: ScribuApi = {
 
   getFileInWorkspace: (path: string) => fs.readTextFile(path),
 
-  // saveCurrentFile: (payload: { path: string; contents: string }) =>
-  //   fs.writeFile(payload),
-
   persistDocument: (payload: { path: string; contents: string }) =>
     fs.writeFile(payload),
 
@@ -78,8 +75,6 @@ export const TauriAdapter: ScribuApi = {
         ),
       ),
 
-  // saveAsFile: (path: string, contents: string) =>
-  //   createNewFile(path, contents),
   saveAsNewDocument: (path: string, contents: string) =>
     createNewFile(path, contents),
 }

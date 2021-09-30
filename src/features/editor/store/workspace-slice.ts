@@ -28,7 +28,7 @@ export const fetchDocument = createAsyncThunk(
 )
 
 export const persistDocument = createAsyncThunk(
-  'workspace/persistDocumentContents',
+  'workspace/persistDocument',
   async (payload: { path: string; contents: string }) =>
     useScribuApi().persistDocument(payload),
 )
@@ -43,11 +43,11 @@ export const createNewDocument = createAsyncThunk(
   async () => useScribuApi().createNewDocument(),
 )
 
-export const saveAsNewFile = createAsyncThunk<
+export const saveAsNewDocument = createAsyncThunk<
   Workspace,
   { path: string },
   { state: RootState }
->('workspace/saveAsNewfile', async ({ path }, { getState }) =>
+>('workspace/saveAsNewDocument', async ({ path }, { getState }) =>
   useScribuApi()
     .getFileInWorkspace(getState().workspace.currentFile.path)
     .then((contents) => useScribuApi().saveAsNewDocument(path, contents)),
@@ -114,13 +114,13 @@ export const workspaceSlice = createSlice({
       state.status = WorkspaceStatus.DocumentNewError
     })
 
-    builder.addCase(saveAsNewFile.fulfilled, (state, action) => {
+    builder.addCase(saveAsNewDocument.fulfilled, (state, action) => {
       state.currentFile = action.payload.currentFile
       state.notifications.push({ type: WorkspaceStatus.DocumentLoaded })
       state.status = WorkspaceStatus.DocumentLoaded
     })
 
-    builder.addCase(saveAsNewFile.rejected, (state, action) => {
+    builder.addCase(saveAsNewDocument.rejected, (state, action) => {
       state.notifications.push({ type: WorkspaceStatus.DocumentNewError })
       state.status = WorkspaceStatus.DocumentNewError
     })

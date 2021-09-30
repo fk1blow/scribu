@@ -5,7 +5,6 @@ import { LanguageSupport, syntaxTree } from '@codemirror/language'
 import docSizePlugin from '../plugins/document-size'
 import { tags, styleTags, Tag } from '@codemirror/highlight'
 import { HighlightStyle, tags as t } from '@codemirror/highlight'
-import { MarkdownConfig, Strikethrough, GFM } from 'lezer-markdown'
 import { theme as lightTheme } from '../../theme/light'
 import { theme as grayTheme } from '../../theme/gray'
 import { testKeymap } from '../plugins/test-keybindings'
@@ -136,7 +135,7 @@ async function loadExentions({
     // fence: Tag.define(), // define custom tag, that can be picked up by the style configuration
   }
 
-  const MarkInlineFence: MarkdownConfig = {
+  const MarkInlineFence = {
     defineNodes: ['InlineFence', 'InlineFenceMark'],
     parseInline: [
       {
@@ -156,7 +155,7 @@ async function loadExentions({
     ],
   }
 
-  const UnderlinedHeadings: MarkdownConfig = {
+  const UnderlinedHeadings = {
     defineNodes: ['InlineFence'],
     parseInline: [
       {
@@ -216,7 +215,7 @@ async function loadExentions({
       (d) => d.name !== 'Markdown',
     ),
     // extensions: [MarkInlineFence],
-    extensions: [Strikethrough],
+    extensions: [Strikethrough, MarkInlineFence],
     // extensions: [UnderlinedHeadings],
     // extensions: [],
   })

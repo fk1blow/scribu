@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import {
   createNewDocument,
   openDocument,
-  saveAsNewFile,
+  saveAsNewDocument,
 } from '../../features/editor/store/workspace-slice'
 import { useAppDispatch } from '../../store/hooks'
 
@@ -36,12 +36,11 @@ export const useTauriCommands = () => {
     listen('tauri://file/save-as', (_evt) => {
       dialog.save().then((filePath: string) => {
         // filePath may be null if the user cancels the operation
-        if (filePath) dispatch(saveAsNewFile({ path: filePath }))
+        if (filePath) dispatch(saveAsNewDocument({ path: filePath }))
       })
     })
 
     listen('tauri://edit/redo', () => {
-      // console.log('tauri redo')
       window.document.dispatchEvent(
         new KeyboardEvent('keydown', {
           keyCode: 90,
