@@ -10,7 +10,7 @@ import {
 } from '../store/selectors'
 import { fetchDocument, persistDocument } from '../store/workspace-slice'
 // importing plan `window`, witout aliasing, will screw with vite's brain
-import { window as tauriWindow } from '@tauri-apps/api'
+import { window as aliasedWindow } from '@tauri-apps/api'
 
 const StyledEditorManager = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ const EditorManager = ({}) => {
     dispatch(fetchDocument(workspaceCurrentFile.path)).then((_) => {
       setEditorKeyRef(workspaceCurrentFile.path)
     })
-    tauriWindow.appWindow.setTitle(workspaceCurrentFile.path)
+    aliasedWindow.appWindow.setTitle(workspaceCurrentFile.path)
   }, [workspaceCurrentFile.path])
 
   return (
@@ -48,7 +48,6 @@ const EditorManager = ({}) => {
       <Editor
         key={editorKeyRef}
         document={documentContent}
-        // move the dispatch directly inside the `Editor` component
         onUpdate={onUpdateDocument}
       />
     </StyledEditorManager>

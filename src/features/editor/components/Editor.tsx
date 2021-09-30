@@ -1,9 +1,10 @@
 import { redo } from '@codemirror/history'
-import { EditorState, Transaction } from '@codemirror/state'
+import { EditorState } from '@codemirror/state'
 import { ViewUpdate } from '@codemirror/view'
 import styled from '@emotion/styled'
 import React, { useCallback, useEffect } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { useWindowSize } from '@react-hook/window-size/throttled'
 import useCodemirror, { getTheme } from '../hooks/useCodemirror'
 
 const EditorWrapper = styled.div`
@@ -68,6 +69,13 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
   const themeRef = React.useRef(theme)
 
   const fileStateMapRef = React.useRef<Record<string, EditorState>>({})
+
+  const windowSize = useWindowSize({ fps: 10 })
+
+  useEffect(() => {
+    if (!editor) return
+    editor.view.dispatch({ selection: editor.view.state.selection })
+  }, windowSize)
 
   useEffect(() => {
     if (!editorRef || !editor) return
