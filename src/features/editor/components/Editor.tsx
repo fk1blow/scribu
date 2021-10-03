@@ -136,8 +136,6 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
           // view the types of transactions and pick the undo/redo events
           // console.log('update.transactions.length: ', update.transactions.length)
           // const t: Transaction = update.transactions[0]
-          // console.log('is undo: ', t?.isUserEvent('undo') || false)
-          // console.log('is redo: ', t?.isUserEvent('redo') || false)
 
           if (update.docChanged) {
             onUpdate(update.state.doc.toString())

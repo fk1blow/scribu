@@ -221,7 +221,7 @@ async function loadExentions({
   })
 
   const extensions = [
-    docSizePlugin,
+    // docSizePlugin,
     // codemirror.gutter.gutter(headingsGutter),
     // codemirror.gutter.lineNumbers(),
     // codemirror.fold.foldGutter(),

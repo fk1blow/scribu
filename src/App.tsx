@@ -8,7 +8,6 @@ import EditorManager from './features/editor/components/EditorManager'
 import { useTauriCommands } from './lib/scribu-commands/use-tauri-commands'
 import { ThemeProvider } from '@emotion/react'
 import { theme } from './features/theme/light'
-import Commander from './features/commander/components/Commander'
 
 const StyledApp = styled.div`
   display: flex;
@@ -31,7 +30,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <StyledApp>
-        <Commander />
         <HeaderBar />
         <EditorManager />
         <StatusBar />
