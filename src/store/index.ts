@@ -1,10 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore, Middleware } from "@reduxjs/toolkit"
 import { createLogger } from 'redux-logger'
 import workspaceSlice from "../features/editor/store/workspace-slice"
 
 const logger = createLogger({
   collapsed: true
-})
+}) as Middleware
 
 export const store = configureStore({
   reducer: {
