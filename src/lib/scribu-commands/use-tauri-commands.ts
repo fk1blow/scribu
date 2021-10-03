@@ -28,9 +28,18 @@ export const useTauriCommands = () => {
       })
     })
 
-    // TODO refactor by trying to keep only the call to `dispatch`
     listen('tauri://file/new', (_evt) => {
       dispatch(createNewDocument())
+    })
+
+    listen('tauri://commander/show', (_evt) => {
+      window.document.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          keyCode: 80,
+          metaKey: true,
+          shiftKey: true,
+        }),
+      )
     })
 
     listen('tauri://file/save-as', (_evt) => {

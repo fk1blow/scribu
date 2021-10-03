@@ -18,7 +18,6 @@ pub fn get_menu() -> Menu {
 
   // create a submenu
   // let my_sub_menu = Menu::new().add_item(disable_item);
-
   let my_app_menu = Menu::new()
     .add_native_item(MenuItem::About("Scribu".to_string()))
     .add_native_item(MenuItem::Separator)
@@ -43,8 +42,12 @@ pub fn get_menu() -> Menu {
 
   let window_menu = Menu::new()
     .add_item(CustomMenuItem::new("reload_window", "Reload").accelerator("CmdOrControl+R"));
-    // broken on Ubuntu
-    // .add_item(CustomMenuItem::new("minimize_window", "Minimize").accelerator("Cmd+M"));
+  // broken on Ubuntu
+  // .add_item(CustomMenuItem::new("minimize_window", "Minimize").accelerator("Cmd+M"));
+
+  let commander_menu = Menu::new().add_item(
+    CustomMenuItem::new("show_commander", "Reveal Commander").accelerator("CmdOrControl+Shift+P"),
+  );
 
   // let test_menu = Menu::new()
   //   .add_item(CustomMenuItem::new(
@@ -57,8 +60,8 @@ pub fn get_menu() -> Menu {
   // add all our childs to the menu (order is how they'll appear)
   Menu::new()
     .add_submenu(Submenu::new("My app", my_app_menu))
-    // .add_submenu(Submenu::new("Other menu", test_menu))
     .add_submenu(Submenu::new("File", file_menu))
     .add_submenu(Submenu::new("Edit", edit_menu))
     .add_submenu(Submenu::new("Window", window_menu))
+    .add_submenu(Submenu::new("Commander", commander_menu))
 }

@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import React, {
-  ButtonHTMLAttributes,
   FC,
   MouseEventHandler,
   useEffect,
@@ -12,11 +11,12 @@ const StyledButton = styled(Button)<{ selected: boolean }>`
   padding: 0.5rem 1rem;
   width: 100%;
   text-align: left;
-  background: transparent;
   align-items: stretch;
+  margin: 0;
   justify-content: space-between;
   background: ${({ selected, theme }) =>
     selected ? theme.commander.highlightColor : 'transparent'};
+  font-size: 12px;
   &:hover,
   &:focus {
     cursor: pointer;

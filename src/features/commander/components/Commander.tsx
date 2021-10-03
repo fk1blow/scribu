@@ -60,14 +60,10 @@ const commands: RunnableCommand[] = [
 ]
 
 const Commander: FunctionComponent<unknown> = (_props) => {
-  const dispatch = useAppDispatch()
-
   const [show, isShowing] = useState(false)
 
   const [fuseInstance, setFuseInstance] =
     useState<Fuse<RunnableCommand> | null>(null)
-
-  const [showsResultList, setShowsResultList] = useState(false)
 
   const [pathInputValue, setPathInputValue] = useState('')
 
@@ -80,7 +76,8 @@ const Commander: FunctionComponent<unknown> = (_props) => {
     setPathInputValue('')
   }, [])
 
-  useHotkeys('ctrl+shift+p', (e) => {
+  useHotkeys('cmd+shift+p, ctrl+shift+p', (e) => {
+    console.log('e: ', e)
     e.preventDefault()
     isShowing(true)
   })
@@ -129,22 +126,6 @@ const Commander: FunctionComponent<unknown> = (_props) => {
     }
   }, [pathInputValue])
 
-  const onOpenDirs = useCallback(async () => {
-    // let fileHandle
-    // window.showDirectoryPicker().then((xoo) => {
-    //   console.log('xoo: ', xoo)
-    // })
-    const dirHandle = await window.showDirectoryPicker()
-
-    console.log('dirHandle: ', dirHandle)
-
-    for await (const entry of dirHandle.values()) {
-      // console.log(entry.kind, entry.name)
-      const xoo = (await entry.getFile(entry.name)) as File
-      const textContent = await xoo.text()
-      console.log('textContent: ', textContent)
-    }
-  }, [])
 
   return (
     <>

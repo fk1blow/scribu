@@ -10,6 +10,8 @@ import {
   runCommand,
   RunCommandsMap,
 } from '../../store/commander-slice'
+import CommandName from './CommandName'
+import CommandShortcut from './CommandShortcut'
 
 const StyledDiv = styled.div`
   display: flex;
@@ -52,7 +54,9 @@ const ResultList: React.FC<Props> = ({ results, onChoose }: Props) => {
         'asCommander'
       ] as RunCommandsMap
 
-      if (cmdName) dispatch(runCommand({ name: cmdName }))
+      console.log('cmdName: ', cmdName)
+
+      // if (cmdName) dispatch(runCommand({ name: cmdName }))
     },
     { enableOnTags: ['INPUT'] },
   )
@@ -65,9 +69,8 @@ const ResultList: React.FC<Props> = ({ results, onChoose }: Props) => {
           selected={selectedRowIdx === idx}
           onClick={onChoose}
         >
-          {resultItem.item.title}
-
-          <span>{resultItem.item.shortcut && resultItem.item.shortcut}</span>
+          <CommandName>{resultItem.item.title}</CommandName>
+          <CommandShortcut>{resultItem.item.shortcut && resultItem.item.shortcut}</CommandShortcut>
         </ResultListButton>
       ))}
     </StyledDiv>

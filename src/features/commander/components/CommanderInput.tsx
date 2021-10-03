@@ -1,8 +1,5 @@
 import styled from '@emotion/styled'
 import React, { FC, useCallback, useEffect, useRef } from 'react'
-import { useHotkeys } from 'react-hotkeys-hook'
-
-const navigationKeyCodes = [40]
 
 const StyledInput = styled.input`
   height: 2rem;
@@ -10,7 +7,7 @@ const StyledInput = styled.input`
   border: none;
   outline: none;
   background: none;
-  border-bottom-color: ${(props) => props.theme.commander.borderColor}; */
+  border-bottom-color: ${(props) => props.theme.commander.borderColor};
 `
 
 interface Props {
@@ -39,6 +36,7 @@ const CommanderInput: FC<Props> = ({ value, onChange, onShouldClose }) => {
       ref={inputRef}
       type="text"
       value={value}
+      autoCorrect="none"
     ></StyledInput>
   )
 }

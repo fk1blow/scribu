@@ -49,6 +49,9 @@ fn main() {
       "redo" => {
         event.window().emit("tauri://edit/redo", "").unwrap_or(());
       }
+      "show_commander" => {
+        event.window().emit("tauri://commander/show", "").unwrap_or(());
+      }
       _ => {}
     })
     .invoke_handler(tauri::generate_handler![commands::filepath_available])

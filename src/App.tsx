@@ -16,7 +16,7 @@ const StyledApp = styled.div`
   height: 100vh;
   position: relative;
   background-color: ${(props) => props.theme.app.backgroundColor};
-  color: ${(props) => props.theme.app.foregroundColor}; ;
+  color: ${(props) => props.theme.app.foregroundColor};
 `
 
 function App() {
