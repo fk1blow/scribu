@@ -8,10 +8,10 @@ type RunCommandFn = () => Promise<any>
 const initialState = {}
 
 export const openFile = async () => {
-  const [fileHandle] = await window.showOpenFilePicker({ multiple: false })
-	console.log('fileHandle: ', fileHandle)
-	const file = await fileHandle.getFile()
-	console.log('file: ', file)
+ // const [fileHandle] = await window.showOpenFilePicker({ multiple: false })
+//	console.log('fileHandle: ', fileHandle)
+//	const file = await fileHandle.getFile()
+//	console.log('file: ', file)
 
   return Promise.resolve({})
 }
