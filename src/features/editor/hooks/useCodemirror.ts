@@ -221,7 +221,7 @@ async function loadExentions({
   })
 
   const extensions = [
-    // docSizePlugin,
+    docSizePlugin,
     // codemirror.gutter.gutter(headingsGutter),
     // codemirror.gutter.lineNumbers(),
     // codemirror.fold.foldGutter(),
@@ -249,6 +249,23 @@ async function loadExentions({
       // ...codemirror.history.historyKeymap,
       { key: 'Mod-Shift-z', run: redo, preventDefault: true },
       { key: 'Mod-z', run: undo, preventDefault: true },
+      {
+        key: 'Mod-=',
+        run: () => {
+          // dispatch this from here though...
+
+          // window.document.dispatchEvent(
+          //   new KeyboardEvent('keydown', {
+          //     keyCode: 187,
+          //     ctrlKey: true,
+          //     bubbles: true,
+          //   }),
+          // )
+
+          return false
+        },
+        preventDefault: false,
+      },
       // ...codemirror.fold.foldKeymap,
       ...codemirror.comment.commentKeymap,
       ...codemirror.autocomplete.completionKeymap,

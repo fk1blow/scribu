@@ -16,6 +16,11 @@ export const useTauriCommands = () => {
 
     listen('tauri://window/reload', () => window.location.reload())
 
+    // cannot be implemented from tauri, not yet!
+    // TODO keep an eye on tauri docs/releases
+    // listen('tauri://window/zoomin', () => console.log('zoom in??'))
+    // listen('tauri://window/zoomout', () => console.log('zoom out??'))
+
     // TODO expand to multiple tabs, when this feat becomes available
     listen('tauri://file-drop', (evt: { event: string; payload: string[] }) => {
       if (evt.payload.length === 1) dispatch(openDocument(evt.payload[0]))

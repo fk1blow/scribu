@@ -2,10 +2,37 @@ import { redo } from '@codemirror/history'
 import { EditorState } from '@codemirror/state'
 import { ViewUpdate } from '@codemirror/view'
 import styled from '@emotion/styled'
-import React, { useCallback, useEffect } from 'react'
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+} from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useWindowSize } from '@react-hook/window-size/throttled'
 import useCodemirror, { getTheme } from '../hooks/useCodemirror'
+import { syntaxTree } from '@codemirror/language'
+import { Tree } from '@lezer/common'
+import { Highlight } from './DocumentHighlight/Highlight'
+
+const getDocumentHighlights = (state: EditorState) => {
+  const tree = syntaxTree(state)
+
+  let headings: any = []
+  let cursor = tree.cursor()
+  do {
+    if (cursor.name.includes('ATXHeading')) {
+      headings.push({
+        from: cursor.from,
+        to: cursor.to,
+        type: cursor.name,
+        value: state.sliceDoc(cursor.from, cursor.to),
+      })
+    }
+  } while (cursor.next())
+
+  return { headings }
+}
 
 const EditorWrapper = styled.div`
   display: flex;
@@ -61,15 +88,14 @@ const EditorWrapper = styled.div`
 interface Props {
   document: string
   onUpdate: (doc: string) => void
+  onHighlightsChange: (highlights: Highlight[]) => void
 }
 
-const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
+const Editor = ({ onUpdate, document, onHighlightsChange }: Props, ref) => {
   const [editor, editorRef] = useCodemirror()
   const [theme, setTheme] = React.useState<'light' | 'dark' | 'gray'>('light')
   const themeRef = React.useRef(theme)
-
   const fileStateMapRef = React.useRef<Record<string, EditorState>>({})
-
   const windowSize = useWindowSize({ fps: 10 })
 
   useEffect(() => {
@@ -84,6 +110,7 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
   useHotkeys(
     'ctrl+shift+Z',
     () => {
+      console.log('ctrl+shift+Z')
       if (editor) {
         let x = redo(editor.view)
         console.log('x: ', x)
@@ -133,12 +160,11 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
       // after view.setState and on any future updates
       const updateListener = codemirror.view.EditorView.updateListener.of(
         (update: ViewUpdate) => {
-          // view the types of transactions and pick the undo/redo events
-          // console.log('update.transactions.length: ', update.transactions.length)
-          // const t: Transaction = update.transactions[0]
-
           if (update.docChanged) {
             onUpdate(update.state.doc.toString())
+
+            const { headings } = getDocumentHighlights(update.state)
+            if (headings.length) onHighlightsChange(headings)
           }
         },
       )
@@ -149,12 +175,21 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
       })
 
       editor.view.setState(initialState)
+
+      const { headings } = getDocumentHighlights(editor.view.state)
+      if (headings.length) onHighlightsChange(headings)
     })
 
     return () => {
       didCancel = true
     }
   }, [editor])
+
+  useImperativeHandle(ref, () => ({
+    scroll(to: number) {
+      editor.view.scrollPosIntoView(to)
+    },
+  }))
 
   return (
     <EditorWrapper>
@@ -163,4 +198,4 @@ const Editor: React.FC<Props> = ({ onUpdate, document }: Props) => {
   )
 }
 
-export default Editor
+export default forwardRef(Editor)

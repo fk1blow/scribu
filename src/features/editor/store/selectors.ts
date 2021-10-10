@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { WorkspaceStatus } from '../../../lib/scribu-client-api/types/WorkspaceStatus'
 import { RootState } from '../../../store'
+import { longText } from '../../../../long-text'
+import { shortText } from '../../../../short-text'
 
 export const lastNotification = createSelector(
   (state: RootState) => state.workspace.notifications,
@@ -24,7 +26,7 @@ export const workspaceReadySelector = createSelector(
 
 export const documentContentSelector = createSelector(
   (state: RootState) => state.workspace,
-  (item) => item.document || ''
+  (item) => item.document || longText
 )
 
 export const workspaceSelector = createSelector(

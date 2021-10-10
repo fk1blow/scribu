@@ -52,6 +52,12 @@ fn main() {
       "show_commander" => {
         event.window().emit("tauri://commander/show", "").unwrap_or(());
       }
+      "zoom_in" => {
+        event.window().emit("tauri://window/zoomin", "").unwrap_or(());
+      }
+      "zoom_out" => {
+        event.window().emit("tauri://window/zoomout", "").unwrap_or(());
+      }
       _ => {}
     })
     .invoke_handler(tauri::generate_handler![commands::filepath_available])

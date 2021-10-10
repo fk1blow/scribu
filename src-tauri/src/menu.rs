@@ -41,7 +41,8 @@ pub fn get_menu() -> Menu {
     .add_native_item(MenuItem::Paste);
 
   let window_menu = Menu::new()
-    .add_item(CustomMenuItem::new("reload_window", "Reload").accelerator("CmdOrControl+R"));
+    .add_item(CustomMenuItem::new("reload_window", "Reload").accelerator("CmdOrControl+R"))
+    .add_item(CustomMenuItem::new("zoom_in", "Zoom").accelerator("CmdOrControl+="));
   // broken on Ubuntu
   // .add_item(CustomMenuItem::new("minimize_window", "Minimize").accelerator("Cmd+M"));
 

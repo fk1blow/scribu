@@ -1,7 +1,7 @@
 import { syntaxTree } from "@codemirror/language"
 import { ViewPlugin, EditorView, ViewUpdate } from "@codemirror/view"
 
-const docSizePlugin = ViewPlugin.fromClass(
+const documentHighlights = ViewPlugin.fromClass(
   class {
     dom: HTMLElement
 
@@ -28,4 +28,4 @@ const docSizePlugin = ViewPlugin.fromClass(
   }
 )
 
-export default docSizePlugin
+export default documentHighlights
