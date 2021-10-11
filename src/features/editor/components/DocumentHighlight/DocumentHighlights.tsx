@@ -6,10 +6,13 @@ import { HighlightTypes } from './HighlightTypes'
 
 const StyledDocumentHighlights = styled.aside`
   padding-left: 32px;
+  padding-right: 32px;
+  border-right: 1px solid #dfd8c9;
+  margin-right: 6px;
   min-width: 200px;
   max-width: 300px;
   overflow: hidden;
-  opacity: .6;
+  opacity: 0.6;
 
   :hover {
     opacity: 1;
@@ -42,14 +45,10 @@ interface Props {
 }
 
 const DocumentHighlights: FC<Props> = ({ items, onItemSelect }) => {
-  const headingItems = useMemo(() => {
-    return items.filter((item) => HighlightTypes[item.type])
-    // .map((item) => {
-    //   const size = item.type.slice(10, item.type.length).length
-    //   console.log('size: ', size)
-    //   return item.
-    // })
-  }, [items])
+  const headingItems = useMemo(
+    () => items.filter((item) => HighlightTypes[item.type]),
+    [items],
+  )
 
   return (
     <StyledDocumentHighlights>
@@ -57,8 +56,6 @@ const DocumentHighlights: FC<Props> = ({ items, onItemSelect }) => {
         {headingItems.map((item, idx) => (
           <HeadingHighlight onSelect={onItemSelect} item={item} key={idx} />
         ))}
-        {/* <HighlightItem href="#">heading 1</HighlightItem>
-        <HighlightItem href="#">heading 1</HighlightItem> */}
       </nav>
     </StyledDocumentHighlights>
   )
