@@ -14,15 +14,16 @@ html {
 
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 *::-webkit-scrollbar-track {
-  // background: rgb(168, 164, 157);
+  // background: rgba(230, 214, 157, 0.5);
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgb(224, 214, 180);
-  border-radius: 20px;
-  // border: 1px solid orange;
+  background-color: rgb(230, 214, 157);
+  border-radius: 6px;
+  border: 1px solid rgb(216, 195, 127);
+  box-shadow:         inset 0 0 10px rgb(236, 195, 148);
 }
