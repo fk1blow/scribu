@@ -64,25 +64,6 @@ const EditorWrapper = styled.div`
   .codemirror-container {
     flex-grow: 1;
   }
-
-  .simplebar-track.simplebar-vertical {
-    width: 14px;
-  }
-
-  .simplebar-content {
-    display: flex;
-    min-height: 100%;
-    flex: 1 1;
-  }
-
-  .simplebar-content-wrapper {
-    height: 100% !important;
-  }
-
-  .simplebar-scrollbar::before {
-    border-radius: 2px;
-    background-image: linear-gradient(-131deg, #c3a55f 0%, #9c8348 100%);
-  }
 `
 
 interface Props {
