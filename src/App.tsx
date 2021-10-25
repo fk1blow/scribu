@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
-import { useAppDispatch, useAppSelector } from './store/hooks'
+import { useAppDispatch } from './store/hooks'
 import { fetchWorkspace } from './features/editor/store/workspace-slice'
 import StatusBar from './features/statusbar/StatusBar'
 import HeaderBar from './features/headerbar/HeaderBar'
 import EditorManager from './features/editor/components/EditorManager'
-import { useTauriCommands } from './lib/scribu-commands/use-tauri-commands'
 import { ThemeProvider } from '@emotion/react'
 import { theme } from './features/theme/light'
+import useTauriWindow from './features/window/hooks/use-tauri-window'
+import { useTauriCommands } from '@lib/scribu-commands/use-tauri-commands'
+import { fetchDocuments } from '@features/documents/store/documents-slice'
 
 const StyledApp = styled.div`
   display: flex;
@@ -21,11 +23,15 @@ const StyledApp = styled.div`
 function App() {
   useTauriCommands()
 
+  const [workspaceId] = useTauriWindow()
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    dispatch(fetchWorkspace())
-  }, [])
+    if (!workspaceId) return
+    dispatch(fetchWorkspace({ id: workspaceId })).then(() => {
+      dispatch(fetchDocuments())
+    })
+  }, [workspaceId])
 
   return (
     <ThemeProvider theme={theme}>

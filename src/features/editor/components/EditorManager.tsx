@@ -4,15 +4,17 @@ import styled from '@emotion/styled'
 
 import Editor from './Editor'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
-import {
-  currentFileSelector,
-  documentContentSelector,
-} from '../store/selectors'
-import { fetchDocument, persistDocument } from '../store/workspace-slice'
+import { currentFileSelector } from '../store/workspace-selectors'
+// import { fetchDocument, persistDocument } from '../store/workspace-slice'
 // importing plan `window`, witout aliasing, will screw with vite's brain
 import { window as aliasedWindow } from '@tauri-apps/api'
 import DocumentHighlights from './DocumentHighlight/DocumentHighlights'
 import { Highlight } from './DocumentHighlight/Highlight'
+import { updateScrollPosition, updateSelection } from '@features/documents/store/documents-slice'
+import {
+  activeDocumentSelector,
+  activeDocumentIdSelector,
+} from '@features/documents/store/documents-selectors'
 
 const StyledEditorManager = styled.div`
   display: flex;
@@ -26,37 +28,58 @@ const StyledEditorManager = styled.div`
 const EditorManager = ({}) => {
   const dispatch = useAppDispatch()
   const workspaceCurrentFile = useAppSelector(currentFileSelector)
-  const documentContent = useAppSelector(documentContentSelector)
+  const activeDocumentId = useAppSelector(activeDocumentIdSelector)
+
+  const activeDocument = useAppSelector(activeDocumentSelector)
+
   const editorRef = useRef<{ scroll: (pos: number) => void }>()
   const [editorKeyRef, setEditorKeyRef] = useState('pristine')
   const [docuHighlights, setDocuHighlights] = useState<Highlight[]>([])
 
+  //
+  // get the current window ID and based on that, pick the workspace, then load the document
+  //
+  // useEffect(() => {
+  //   if (!workspaceCurrentFile.path) return
+  //   dispatch(
+  //     readDocumentContents({ filepath: workspaceCurrentFile.path }),
+  //   ).then((_) => setEditorKeyRef(workspaceCurrentFile.path))
+  //   aliasedWindow.appWindow.setTitle(workspaceCurrentFile.path)
+  // }, [workspaceCurrentFile.path])
+
   useEffect(() => {
-    if (!workspaceCurrentFile.path) return
-    dispatch(fetchDocument(workspaceCurrentFile.path)).then((_) => {
-      setEditorKeyRef(workspaceCurrentFile.path)
-    })
-    aliasedWindow.appWindow.setTitle(workspaceCurrentFile.path)
-  }, [workspaceCurrentFile.path])
+    if (!activeDocumentId) return
+    setEditorKeyRef(activeDocumentId)
+  }, [activeDocumentId])
 
   const onUpdateDocument = useCallback(
     debounce((contents) => {
-      if (!workspaceCurrentFile.path.length) return
-      dispatch(persistDocument({ path: workspaceCurrentFile.path, contents }))
+      // if (!workspaceCurrentFile.path.length) return
+      // dispatch(persistDocument({ path: workspaceCurrentFile.path, contents }))
     }, 500),
     [workspaceCurrentFile.path],
+  )
+
+  const onSelectionUpdate = useCallback(
+    (range: { from: number; to: number }) => dispatch(updateSelection(range)),
+    [],
+  )
+
+  const onScrollPositionUpdate = useCallback(
+    (pos: number) => dispatch(updateScrollPosition(pos)),
+    [],
   )
 
   const onHighlightsChange = useCallback(
     (highlights) => {
       setDocuHighlights(highlights)
     },
-    [workspaceCurrentFile.path],
+    [activeDocumentId],
   )
 
   const onHighlightSelect = useCallback(
-    (payload) => {
-      editorRef.current.scroll(payload.from)
+    (payload: { from: number; to: number }) => {
+      editorRef.current?.scroll(payload.from)
     },
     [editorRef.current],
   )
@@ -68,13 +91,17 @@ const EditorManager = ({}) => {
         onItemSelect={onHighlightSelect}
       />
 
-      <Editor
-        key={editorKeyRef}
-        ref={editorRef}
-        document={documentContent}
-        onUpdate={onUpdateDocument}
-        onHighlightsChange={onHighlightsChange}
-      />
+      {activeDocument && (
+        <Editor
+          key={editorKeyRef}
+          ref={editorRef}
+          document={activeDocument}
+          onContentsUpdate={onUpdateDocument}
+          onSelectionUpdate={onSelectionUpdate}
+          onScrollPositionUpdate={onScrollPositionUpdate}
+          onHighlightsChange={onHighlightsChange}
+        />
+      )}
     </StyledEditorManager>
   )
 }

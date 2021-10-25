@@ -4,5 +4,6 @@ export enum HighlightTypes {
   ATXHeading3 = 'ATXHeading3',
   ATXHeading4 = 'ATXHeading4',
   ATXHeading5 = 'ATXHeading5',
-  ATXHeading6 = 'ATXHeading6'
+  ATXHeading6 = 'ATXHeading6',
+  HorizontalRule = 'HorizontalRule'
 }

@@ -1,18 +1,20 @@
 import styled from '@emotion/styled'
-import React, { FC, useEffect, useMemo } from 'react'
+import React, { FC, useCallback, useEffect, useMemo } from 'react'
 import HeadingHighlight from './HeadingHighlight'
 import { Highlight } from './Highlight'
 import { HighlightTypes } from './HighlightTypes'
+import HorizontalRuleHighlight from './HorizontalRuleHighlight'
 
 const StyledDocumentHighlights = styled.aside`
   padding-left: 32px;
   padding-right: 32px;
   border-right: 1px solid #dfd8c9;
   margin-right: 6px;
-  min-width: 200px;
+  width: 300px;
   max-width: 300px;
   overflow: hidden;
-  opacity: 0.6;
+  opacity: 0.4;
+  transition: opacity 0.1s linear;
 
   :hover {
     opacity: 1;
@@ -24,8 +26,8 @@ const StyledDocumentHighlights = styled.aside`
     margin: 0;
     padding: 0;
 
-    a:not(:first-of-type) {
-      margin-top: 12px;
+    & > * {
+      margin-bottom: 12px;
     }
   }
 `
@@ -50,12 +52,39 @@ const DocumentHighlights: FC<Props> = ({ items, onItemSelect }) => {
     [items],
   )
 
+  const getHighlightType = useCallback(
+    (highlight: Highlight, key: any) => {
+      // switch(highlight) {
+      //   case HighlightTypes.
+      // }
+      if (highlight.type.includes('ATXHeading')) {
+        return (
+          <HeadingHighlight
+            onSelect={onItemSelect}
+            item={highlight}
+            key={key}
+          />
+        )
+      } else {
+        return (
+          <HorizontalRuleHighlight
+            onSelect={onItemSelect}
+            item={highlight}
+            key={key}
+          />
+        )
+      }
+    },
+    [items],
+  )
+
   return (
     <StyledDocumentHighlights>
       <nav>
-        {headingItems.map((item, idx) => (
-          <HeadingHighlight onSelect={onItemSelect} item={item} key={idx} />
-        ))}
+        {items.map((item, idx) =>
+          // <HeadingHighlight onSelect={onItemSelect} item={item} key={idx} />
+          getHighlightType(item, idx),
+        )}
       </nav>
     </StyledDocumentHighlights>
   )

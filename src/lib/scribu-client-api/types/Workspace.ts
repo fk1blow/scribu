@@ -1,9 +1,13 @@
-import { Notification } from './Notification'
-import { WorkspaceStatus } from './WorkspaceStatus'
+import { WorkspaceDocument } from './WorkspaceDocument'
+import { WorkspaceWindow } from './WorkspaceWindow'
+
+type ActiveDocumentId = string
 
 export interface Workspace {
+  id: string | null
   currentFile: { path: string }
-  status: WorkspaceStatus
-  notifications: Notification[]
-  document?: string
+  window: WorkspaceWindow
+  activeDocument?: ActiveDocumentId
+  openedDocuments: WorkspaceDocument[]
+  previousDocuments: WorkspaceDocument[]
 }

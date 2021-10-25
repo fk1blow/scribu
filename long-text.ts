@@ -8,6 +8,8 @@ what is this thing
 
 ### last heading inside here
 
+------------------------------------------------------------------
+
 # Era DataTypes
 
 ## Terminology
@@ -50,6 +52,9 @@ Optionality should also to visualle representing with providing DataSet inputasd
 - Enum: Single input field with "tagging" behavior (every space adds new entry)
 - Webhook: Dropdown with eligble webhooks
 - WebhookVa
+
+
+------------------------------------------------------------------
 
 
 ## from Carsten
@@ -118,6 +123,8 @@ instead of a text input(with id), show a dropdown to select those refs
 ## stages
 
 don't allow the deletion of all the stages(stop at the last one preset)
+
+------------------------------------------------------------------
 
 
 ## transitions

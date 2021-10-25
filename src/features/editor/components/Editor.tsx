@@ -1,5 +1,5 @@
 import { redo } from '@codemirror/history'
-import { EditorState } from '@codemirror/state'
+import { EditorSelection, EditorState, SelectionRange } from '@codemirror/state'
 import { ViewUpdate } from '@codemirror/view'
 import styled from '@emotion/styled'
 import React, {
@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useState,
 } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useWindowSize } from '@react-hook/window-size/throttled'
@@ -14,15 +15,20 @@ import useCodemirror, { getTheme } from '../hooks/useCodemirror'
 import { syntaxTree } from '@codemirror/language'
 import { Tree } from '@lezer/common'
 import { Highlight } from './DocumentHighlight/Highlight'
+import { MarkdownDocument } from '@features/documents/store/documents-slice'
 
 const getDocumentHighlights = (state: EditorState) => {
   const tree = syntaxTree(state)
 
-  let headings: any = []
+  let highlights: any = []
   let cursor = tree.cursor()
   do {
-    if (cursor.name.includes('ATXHeading')) {
-      headings.push({
+    if (
+      ['ATXHeading', 'HorizontalRule'].some((item) =>
+        cursor.name.includes(item),
+      )
+    ) {
+      highlights.push({
         from: cursor.from,
         to: cursor.to,
         type: cursor.name,
@@ -31,7 +37,7 @@ const getDocumentHighlights = (state: EditorState) => {
     }
   } while (cursor.next())
 
-  return { headings }
+  return highlights
 }
 
 const EditorWrapper = styled.div`
@@ -67,12 +73,23 @@ const EditorWrapper = styled.div`
 `
 
 interface Props {
-  document: string
-  onUpdate: (doc: string) => void
+  document: MarkdownDocument
+  onContentsUpdate: (doc: string) => void
+  onSelectionUpdate: (payload: { from: number; to: number }) => void
+  onScrollPositionUpdate: (pos: number) => void
   onHighlightsChange: (highlights: Highlight[]) => void
 }
 
-const Editor = ({ onUpdate, document, onHighlightsChange }: Props, ref) => {
+const Editor = (
+  {
+    onContentsUpdate,
+    onSelectionUpdate,
+    onScrollPositionUpdate,
+    document,
+    onHighlightsChange,
+  }: Props,
+  ref,
+) => {
   const [editor, editorRef] = useCodemirror()
   const [theme, setTheme] = React.useState<'light' | 'dark' | 'gray'>('light')
   const themeRef = React.useRef(theme)
@@ -112,65 +129,133 @@ const Editor = ({ onUpdate, document, onHighlightsChange }: Props, ref) => {
   useEffect(() => {
     if (!editor) return
 
-    const state = fileStateMapRef.current[document]
-
     const theme = getTheme(editor.codemirror, themeRef.current)
 
-    if (state) {
-      // We've loaded this file before
-      editor.view.setState(state)
+    // const state = fileStateMapRef.current[document.contents]
 
-      // TODO: only do this if the state's theme doesn't match the current one
-      editor.setTheme(theme)
+    // if (state) {
+    //   // We've loaded this file before
+    //   editor.view.setState(state)
 
-      return
-    }
+    //   // TODO: only do this if the state's theme doesn't match the current one
+    //   editor.setTheme(theme)
+
+    //   return
+    // }
 
     // Create the editor state object for this file
 
     let didCancel = false
 
-    editor.loadExentions({ filename: document, theme }).then((extensions) => {
-      if (didCancel) return
+    editor
+      .loadExentions({ filename: document.filepath, theme })
+      .then((extensions) => {
+        if (didCancel) return
 
-      const { codemirror } = editor
+        const { codemirror } = editor
 
-      codemirror.history
+        codemirror.history
 
-      // Keep our state in sync with the editor's state. This listener is called
-      // after view.setState and on any future updates
-      const updateListener = codemirror.view.EditorView.updateListener.of(
-        (update: ViewUpdate) => {
-          if (update.docChanged) {
-            onUpdate(update.state.doc.toString())
+        // Keep our state in sync with the editor's state. This listener is called
+        // after view.setState and on any future updates
+        const updateListener = codemirror.view.EditorView.updateListener.of(
+          (update: ViewUpdate) => {
+            if (update.selectionSet) {
+              const range = update.state.selection.ranges[0]
+              // only if the cursor's position has changed
+              // if (range && range.from !== document.selection.from) {
+              //   onCursorUpdate(range.from)
+              // }
+              onSelectionUpdate({ from: range.from, to: range.to })
 
-            const { headings } = getDocumentHighlights(update.state)
-            if (headings.length) onHighlightsChange(headings)
-          }
-        },
-      )
+              // console.log('range: ', range)
+            }
 
-      const initialState = codemirror.state.EditorState.create({
-        doc: document,
-        extensions: [extensions, updateListener],
+            if (update.docChanged) {
+              onContentsUpdate(update.state.doc.toString())
+              const highlights = getDocumentHighlights(update.state)
+              if (highlights.length) onHighlightsChange(highlights)
+            }
+          },
+        )
+
+        const scrollListener = codemirror.view.EditorView.domEventHandlers({
+          scroll(evt, _view) {
+            const targetEl = evt.target as HTMLElement
+
+            if (targetEl) {
+              // if (targetEl.scrollTop !== document.scroll)
+              console.log('targetEl.scrollTop: ', targetEl.scrollTop)
+              onScrollPositionUpdate(targetEl.scrollTop)
+            }
+          },
+        })
+
+        const initialState = codemirror.state.EditorState.create({
+          doc: document.contents,
+          extensions: [extensions, updateListener, scrollListener],
+          selection: EditorSelection.create([
+            EditorSelection.range(
+              document.selection.from,
+              document.selection.to,
+            ),
+            // EditorSelection.cursor(document.selection.from),
+            // EditorSelection.cursor(document.selection.to),
+          ]),
+        })
+
+        editor.view.setState(initialState)
+
+        const highlights = getDocumentHighlights(editor.view.state)
+        if (highlights.length) onHighlightsChange(highlights)
+
+        // editor.view.scrollPosIntoView(document.selection.from)
+        // editor.view.scrollDOM.scrollTop = 803
+        // editor.view.focus()
+
+        setTimeout(() => {
+          // editor.view.scrollDOM.scrollTo(0, 2950)
+          // editor.view.viewport
+          // editor.view.scrollDOM.scrollTop = 1273
+          // editor.view.scrollPosIntoView(document.selection.from)
+          // editor.view.scrollDOM.scrollTop = 1273
+          console.log('scrolling to: ', document.scroll)
+
+          editor.view.scrollPosIntoView(document.selection.from)
+          editor.view.scrollDOM.scrollTop = document.scroll
+          editor.view.focus()
+          // editor.view.scrollPosIntoView(document.selection.from)
+          // editor.view.scrollDOM.scrollTo(0, 950)
+          // editor.view.scrollDOM.scrollTop = document.scroll
+        }, 1000)
+
+        // moved to the initialState
+        // put a cursor on the document and focus the view
+        // const selection = EditorSelection.create([
+        //   EditorSelection.cursor(document.cursor),
+        // ])
+        // editor.view.dispatch({ selection })
+
+        // TODO should persist the scroll position as well
+        // then try to scroll to that position
+        // editor.view.scrollPosIntoView(document.selection.from)
+        // editor.view.focus()
       })
-
-      editor.view.setState(initialState)
-
-      const { headings } = getDocumentHighlights(editor.view.state)
-      if (headings.length) onHighlightsChange(headings)
-    })
 
     return () => {
       didCancel = true
     }
   }, [editor])
 
-  useImperativeHandle(ref, () => ({
-    scroll(to: number) {
-      editor.view.scrollPosIntoView(to)
-    },
-  }))
+  useImperativeHandle(
+    ref,
+    () => ({
+      scroll(to: number) {
+        editor.view.scrollPosIntoView(to)
+      },
+    }),
+    [editor],
+  )
 
   return (
     <EditorWrapper>

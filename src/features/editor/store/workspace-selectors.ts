@@ -14,8 +14,18 @@ export const documentLoadedSelector = createSelector(
   (item) => item === WorkspaceStatus.DocumentLoaded
 )
 
+export const currentWorkspace = createSelector(
+  (state: RootState) => state.workspace,
+  (item) => item
+)
+
 export const currentFileSelector = createSelector(
   (state: RootState) => state.workspace.currentFile,
+  (item) => item
+)
+
+export const currentWorkspaceIdSelector = createSelector(
+  (state: RootState) => state.workspace.id,
   (item) => item
 )
 
@@ -24,10 +34,12 @@ export const workspaceReadySelector = createSelector(
   (item) => item === WorkspaceStatus.WorkspacePrepared
 )
 
-export const documentContentSelector = createSelector(
-  (state: RootState) => state.workspace,
-  (item) => item.document || longText
-)
+// export const documentContentSelector = createSelector(
+//   (state: RootState) => state.workspace,
+//   (item) => item.document
+//   // used when testing
+//   // (item) => item.document || longText
+// )
 
 export const workspaceSelector = createSelector(
   (state: RootState) => state.workspace,

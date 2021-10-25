@@ -6,9 +6,9 @@
 extern crate notify;
 
 use tauri::WindowBuilder;
+mod commands;
 mod menu;
 mod workspace;
-mod commands;
 
 fn main() {
   tauri::Builder::default()
@@ -50,37 +50,48 @@ fn main() {
         event.window().emit("tauri://edit/redo", "").unwrap_or(());
       }
       "show_commander" => {
-        event.window().emit("tauri://commander/show", "").unwrap_or(());
+        event
+          .window()
+          .emit("tauri://commander/show", "")
+          .unwrap_or(());
       }
       "zoom_in" => {
-        event.window().emit("tauri://window/zoomin", "").unwrap_or(());
+        event
+          .window()
+          .emit("tauri://window/zoomin", "")
+          .unwrap_or(());
       }
       "zoom_out" => {
-        event.window().emit("tauri://window/zoomout", "").unwrap_or(());
+        event
+          .window()
+          .emit("tauri://window/zoomout", "")
+          .unwrap_or(());
       }
       _ => {}
     })
     .invoke_handler(tauri::generate_handler![commands::filepath_available])
     .setup(|app| {
-      // TODO maybe defer this to the web app so that opening the window gets faster
-      workspace::ensure_workspace_ready();
-
-      // create the window
-      app
-        .create_window(
-          "Rust".to_string(),
-          tauri::WindowUrl::App("index.html".into()),
-          |builder_wrapper, webview_attributes| {
-            (
-              builder_wrapper
-                .title("scrib")
-                .inner_size(1000.0, 1200.0)
-                .position(600.0, 200.0),
-              // .center(),
-              webview_attributes,
-            )
-          },
-        )
+      workspace::ensure_workspace_ready()
+        .map(|workspaces| {
+          for (_pos, item) in workspaces.iter().enumerate() {
+            app
+              .create_window(
+                item.id.to_string(),
+                tauri::WindowUrl::App("index.html".into()),
+                |builder_wrapper, webview_attributes| {
+                  (
+                    builder_wrapper
+                      .title("scrib")
+                      .position(item.window.position.x, item.window.position.y)
+                      .inner_size(item.window.size.width, item.window.size.height)
+                      .center(),
+                    webview_attributes,
+                  )
+                },
+              )
+              .unwrap_or(());
+          }
+        })
         .unwrap_or(());
 
       Ok(())

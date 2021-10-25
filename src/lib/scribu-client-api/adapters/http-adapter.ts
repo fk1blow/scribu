@@ -5,10 +5,14 @@ const emptyWorkspace: Workspace = {
   currentFile: { path: '' },
   status: WorkspaceStatus.WorkspacePristine,
   notifications: [],
+  window: {
+    position: [0, 0],
+    size: [0, 0]
+  }
 }
 
 export const HttpAdapter: any = {
-  getWorkspace: () => Promise.resolve(emptyWorkspace),
+  getWorkspace: (id: string) => Promise.resolve(emptyWorkspace),
 
   getFileInWorkspace: (path: string) =>
     Promise.resolve('this is me, the _file_'),

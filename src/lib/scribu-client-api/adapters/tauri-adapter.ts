@@ -4,21 +4,39 @@ import { Workspace } from '../types/Workspace'
 
 const newFileContents = '# new file bossule'
 
-const readWorkspace = () =>
+const readWorkspaces = () =>
   path
     .appDir()
     .then((appDirPath) => path.join(appDirPath, 'workspace.json'))
-    .then<Workspace>((workspacePath) => {
+    .then<Workspace[]>((workspacePath) => {
       return fs
         .readTextFile(workspacePath)
-        .then((r) => JSON.parse(r) as Workspace)
+        .then((r) => JSON.parse(r) as Workspace[])
     })
 
-const replaceCurrentFile = async (newPath: string) => {
-  const oldWorkspace = await readWorkspace()
+const changeCurrentFile = async (update: Workspace) => {
+  const allWorkspaces = await readWorkspaces()
+
+  const newWorkspace = allWorkspaces.map((workspace) =>
+    workspace.id === update.id ? update : workspace,
+  )
+
+  const appDirPath = await path.appDir()
+  const workspaceJsonPath = await path.join(appDirPath, 'workspace.json')
+
+  await fs.writeFile({
+    path: workspaceJsonPath,
+    contents: JSON.stringify(newWorkspace),
+  })
+
+  return update
+}
+
+const replaceCurrentFile = async ({ workspaceId, filepath }) => {
+  const oldWorkspace = await readWorkspaces()
   const newWorkspace = {
     ...oldWorkspace,
-    currentFile: { path: newPath },
+    currentFile: { path: filepath },
   }
 
   const appDirPath = await path.appDir()
@@ -32,7 +50,7 @@ const replaceCurrentFile = async (newPath: string) => {
 }
 
 const createNewFile = async (atPath: string, contents = newFileContents) => {
-  const oldWorkspace = await readWorkspace()
+  const oldWorkspace = await readWorkspaces()
   const newWorkspace = {
     ...oldWorkspace,
     currentFile: { path: atPath },
@@ -56,14 +74,18 @@ const createNewFile = async (atPath: string, contents = newFileContents) => {
 }
 
 export const TauriAdapter: ScribuApi = {
-  getWorkspace: () => readWorkspace(),
+  getWorkspaces: () => readWorkspaces(),
 
+  // TODO maybe rename it to `readFileInWorkspace`???
   getFileInWorkspace: (path: string) => fs.readTextFile(path),
 
   persistDocument: (payload: { path: string; contents: string }) =>
     fs.writeFile(payload),
 
-  openDocument: (path: string) => replaceCurrentFile(path),
+  openDocument: ({ workspaceId, filepath }) =>
+    replaceCurrentFile({ workspaceId, filepath }),
+
+  changeCurrentFile: (update: Workspace) => changeCurrentFile(update),
 
   createNewDocument: () =>
     path
