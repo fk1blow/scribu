@@ -95,6 +95,7 @@ const Editor = (
   const themeRef = React.useRef(theme)
   const fileStateMapRef = React.useRef<Record<string, EditorState>>({})
   const windowSize = useWindowSize({ fps: 10 })
+  const [afterInit, setAfterInit] = useState(false)
 
   useEffect(() => {
     if (!editor) return
@@ -182,11 +183,16 @@ const Editor = (
         const scrollListener = codemirror.view.EditorView.domEventHandlers({
           scroll(evt, _view) {
             const targetEl = evt.target as HTMLElement
+            // console.log('targetEl?.scrollTop: ', targetEl?.scrollTop)
+            const scrollDistance =
+              window.document.querySelectorAll('.cm-scroller')[0].scrollTop
+            const foo = scrollDistance - 193
 
-            if (targetEl) {
-              // if (targetEl.scrollTop !== document.scroll)
-              console.log('targetEl.scrollTop: ', targetEl.scrollTop)
-              onScrollPositionUpdate(targetEl.scrollTop)
+            console.log('scrollDistance: ', scrollDistance)
+
+            // if (targetEl && targetEl?.scrollTop !== document.scroll) {
+            if (scrollDistance !== document.scroll) {
+              // onScrollPositionUpdate(foo)
             }
           },
         })
@@ -194,6 +200,7 @@ const Editor = (
         const initialState = codemirror.state.EditorState.create({
           doc: document.contents,
           extensions: [extensions, updateListener, scrollListener],
+          // extensions: [extensions, updateListener],
           selection: EditorSelection.create([
             EditorSelection.range(
               document.selection.from,
@@ -213,33 +220,49 @@ const Editor = (
         // editor.view.scrollDOM.scrollTop = 803
         // editor.view.focus()
 
-        setTimeout(() => {
-          // editor.view.scrollDOM.scrollTo(0, 2950)
-          // editor.view.viewport
-          // editor.view.scrollDOM.scrollTop = 1273
-          // editor.view.scrollPosIntoView(document.selection.from)
-          // editor.view.scrollDOM.scrollTop = 1273
-          console.log('scrolling to: ', document.scroll)
+        // setTimeout(() => {
+        // editor.view.scrollDOM.scrollTo(0, 2950)
+        // editor.view.viewport
+        // editor.view.scrollDOM.scrollTop = 1273
+        // editor.view.scrollPosIntoView(document.selection.from)
+        // editor.view.scrollDOM.scrollTop = 1273
+        // console.log('scrolling to: ', document.scroll)
 
-          editor.view.scrollPosIntoView(document.selection.from)
-          editor.view.scrollDOM.scrollTop = document.scroll
-          editor.view.focus()
-          // editor.view.scrollPosIntoView(document.selection.from)
-          // editor.view.scrollDOM.scrollTo(0, 950)
-          // editor.view.scrollDOM.scrollTop = document.scroll
-        }, 1000)
+        // editor.view.scrollPosIntoView(document.selection.from)
+        // editor.view.scrollDOM.scrollTop = document.scroll
+        // editor.view.focus()
+
+        // editor.view.focus()
+        // editor.view.scrollPosIntoView(820)
+        // const targetEl = window.document.querySelectorAll('.cm-scroller')[0]
+
+        // if (targetEl) {
+        //   targetEl.scrollTop = 851
+        // }
+        // editor.view.scrollPosIntoView(document.selection.from)
+        // editor.view.scrollDOM.scrollTo(0, 950)
+        // editor.view.scrollDOM.scrollTop = document.scroll
+        // }, 1000)
 
         // moved to the initialState
         // put a cursor on the document and focus the view
-        // const selection = EditorSelection.create([
-        //   EditorSelection.cursor(document.cursor),
-        // ])
-        // editor.view.dispatch({ selection })
+        console.log('document.selection.from: ', document.selection.from)
+        const selection = EditorSelection.create([
+          // EditorSelection.range(1, 6),
+          EditorSelection.cursor(document.selection.from),
+        ])
+        editor.view.dispatch({ selection })
+
+        setTimeout(() => {
+          editor.view.scrollPosIntoView(document.selection.from)
+          editor.view.scrollDOM.scrollTo(0, 460)
+        }, 100)
 
         // TODO should persist the scroll position as well
         // then try to scroll to that position
-        // editor.view.scrollPosIntoView(document.selection.from)
-        // editor.view.focus()
+        editor.view.focus()
+        console.log('onEditorInitialized')
+        // setTimeout(() => onEditorInitialized(), 1000)
       })
 
     return () => {
@@ -250,8 +273,17 @@ const Editor = (
   useImperativeHandle(
     ref,
     () => ({
-      scroll(to: number) {
+      scrollToHighlight(to: number) {
         editor.view.scrollPosIntoView(to)
+      },
+
+      updateScrollDom(x) {
+        console.log('should scroll to: ', x)
+        // console.log('editor.view.scrollDOM.offsetHeight: ', editor.view.scrollDOM.offsetHeight)
+        // editor.view.scrollDOM.scrollTop = x
+        // setAfterInit(true)
+
+        // need to defer the scrolling handler until after the initial scroll top muie
       },
     }),
     [editor],

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { debounce } from 'lodash'
+import { debounce, throttle } from 'lodash'
 import styled from '@emotion/styled'
 
 import Editor from './Editor'
@@ -10,11 +10,15 @@ import { currentFileSelector } from '../store/workspace-selectors'
 import { window as aliasedWindow } from '@tauri-apps/api'
 import DocumentHighlights from './DocumentHighlight/DocumentHighlights'
 import { Highlight } from './DocumentHighlight/Highlight'
-import { updateScrollPosition, updateSelection } from '@features/documents/store/documents-slice'
+import {
+  updateScrollPosition,
+  updateSelection,
+} from '@features/documents/store/documents-slice'
 import {
   activeDocumentSelector,
   activeDocumentIdSelector,
 } from '@features/documents/store/documents-selectors'
+import { longText } from '../../../../long-text'
 
 const StyledEditorManager = styled.div`
   display: flex;
@@ -31,8 +35,12 @@ const EditorManager = ({}) => {
   const activeDocumentId = useAppSelector(activeDocumentIdSelector)
 
   const activeDocument = useAppSelector(activeDocumentSelector)
+  // const activeDocument = { contents: longText, selection: { from: 0, to: 0 } }
 
-  const editorRef = useRef<{ scroll: (pos: number) => void }>()
+  const editorRef = useRef<{
+    scrollToHighlight: (pos: number) => void
+    updateScrollDom: (pos: number) => void
+  }>()
   const [editorKeyRef, setEditorKeyRef] = useState('pristine')
   const [docuHighlights, setDocuHighlights] = useState<Highlight[]>([])
 
@@ -51,6 +59,23 @@ const EditorManager = ({}) => {
     if (!activeDocumentId) return
     setEditorKeyRef(activeDocumentId)
   }, [activeDocumentId])
+
+  // useEffect(() => {
+  //   // console.log('editorKeyRef: ', editorKeyRef)
+  //   if (editorKeyRef === 'pristine') return
+
+  //   const x = document.querySelectorAll('.cm-scroller')
+  //   // console.log('x: ', x)
+
+  //   if (x) {
+  //     // console.log('x[0]: ', x[0].scrollTop)
+  //     setTimeout(() => {
+  //       x[0].scrollTop = 200
+  //     }, 100)
+  //   }
+
+  //   // [0].scrollTop = 650
+  // }, [editorKeyRef])
 
   const onUpdateDocument = useCallback(
     debounce((contents) => {
@@ -79,7 +104,7 @@ const EditorManager = ({}) => {
 
   const onHighlightSelect = useCallback(
     (payload: { from: number; to: number }) => {
-      editorRef.current?.scroll(payload.from)
+      editorRef.current?.scrollToHighlight(payload.from)
     },
     [editorRef.current],
   )
@@ -102,6 +127,9 @@ const EditorManager = ({}) => {
           onHighlightsChange={onHighlightsChange}
         />
       )}
+      {/* <div style={{ height: '3000px', overflowY: 'auto', maxHeight: '100vh' }}>
+        a div here
+      </div> */}
     </StyledEditorManager>
   )
 }
